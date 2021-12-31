@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <script src="deltachat.js"></script>
+</head>
+<body>
+<input id="input" type="text"/>
+<a href="" onclick="sendMsg(); return false;">Send</a>
+<p id="output"></p>
+<script>
+
+    function sendMsg() {
+        msg = document.getElementById("input").value;
+        window.deltachat.sendUpdate('someone typed "'+msg+'"', msg);
+    }
+
+    function receiveUpdate(update) {
+        document.getElementById('output').innerHTML += update.payload + "<br>";
+    }
+
+    window.deltachat.setUpdateListener(receiveUpdate);
+
+</script>
+</body>
+</html>
