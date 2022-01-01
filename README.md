@@ -16,8 +16,8 @@ no server or installation required.
 - once you call sendUpdate() in on peer,
   all peers will get the update with their update listeners.
 
-keep in mind, when bundling your webxdc app, `webxdc.js` is not needed,
-it will be provided by the target implementation.
+when your app is done, you can bundle it using `./create-xdc.sh your-app-name`
+and send it to your friends :)
 
 note, that the api is not yet complete,
 this is just a, maybe already useful, proof-of-concept for now.
