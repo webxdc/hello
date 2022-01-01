@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8"/>
-    <script src="deltachat.js"></script>
+    <script src="webxdc.js"></script>
 </head>
 <body>
 <input id="input" type="text"/>
@@ -12,14 +12,14 @@
 
     function sendMsg() {
         msg = document.getElementById("input").value;
-        window.deltachat.sendUpdate('someone typed "'+msg+'"', {"addr": window.deltachat.selfAddr(), "msg": msg});
+        window.webxdc.sendUpdate('someone typed "'+msg+'"', {"addr": window.webxdc.selfAddr(), "msg": msg});
     }
 
     function receiveUpdate(update) {
         document.getElementById('output').innerHTML += "<strong>&lt;" + update.payload.addr + "&gt;</strong> " + update.payload.msg + "<br>";
     }
 
-    window.deltachat.setUpdateListener(receiveUpdate);
+    window.webxdc.setUpdateListener(receiveUpdate);
 
 </script>
 </body>

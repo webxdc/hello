@@ -1,7 +1,7 @@
 // debug friend: document.writeln(JSON.stringify(value));
 // maybe helpful: window.sessionStorage, https://www.w3schools.com/html/html5_webstorage.asp
 
-window.deltachat = (() => {
+window.webxdc = (() => {
     var updateListener = () => {};
 
     return {
@@ -57,7 +57,7 @@ function alterApp() {
 	title = document.createElement('title');
 	document.getElementsByTagName('head')[0].append(title);
     }
-    title.innerText = window.deltachat.selfAddr();
+    title.innerText = window.webxdc.selfAddr();
 
     if (getXdcRoot() == window) {
 	var div = document.createElement('div');
