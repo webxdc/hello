@@ -5,7 +5,7 @@ window.deltachat = (() => {
     var updateListener = () => {};
 
     return {
-        selfAddr: () => "foo@bar.dex",
+        selfAddr: () => window.xdcSelfAddr || "device0@local.host",
         setUpdateListener: (cb) => (window.xdcUpdateListener = cb),
         getAllUpdates: () => {
             return JSON.parse(
@@ -47,16 +47,26 @@ function addPeer() {
     var xdcChild = window.open(window.location);
     var xdcRoot = getXdcRoot();
     xdcChild.xdcRoot = xdcRoot;
+    xdcChild.xdcSelfAddr = "device" + xdcRoot.allXdcWindows.length + "@local.host";
     xdcRoot.allXdcWindows.push(xdcChild);
 }
 
-function alterBody() {
-    var div = document.createElement('div');
-    div.innerHTML =
-        '<div style="' + styleControlPanel + '">' +
-        '<a href="javascript:addPeer();" style="' + styleMenuLink + '">Add Peer</a>' +
-        '<div>';
-    document.getElementsByTagName('body')[0].append(div.firstChild);
+function alterApp() {
+    var title = document.getElementsByTagName('title')[0];
+    if (typeof title == 'undefined') {
+	title = document.createElement('title');
+	document.getElementsByTagName('head')[0].append(title);
+    }
+    title.innerText = window.deltachat.selfAddr();
+
+    if (getXdcRoot() == window) {
+	var div = document.createElement('div');
+	div.innerHTML =
+            '<div style="' + styleControlPanel + '">' +
+            '<a href="javascript:addPeer();" style="' + styleMenuLink + '">Add Peer</a>' +
+            '<div>';
+	document.getElementsByTagName('body')[0].append(div.firstChild);
+    }
 }
 
-window.addEventListener("load", alterBody);
+window.addEventListener("load", alterApp);
