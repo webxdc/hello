@@ -8,23 +8,23 @@ window.webxdc = (() => {
         selfAddr: () => window.xdcSelfAddr || "device0@local.host",
         setUpdateListener: (cb) => (window.xdcUpdateListener = cb),
         getAllUpdates: () => {
-            return JSON.parse(
-                '[]'
-                //'[{"action":"configure", "question":"your favorite colorxx", "answers":["red","green","blue","yellow","purple1"]},{"action":"vote", "sender":"foo2@bar.de", "vote":0},{"action":"vote", "sender":"foo@bar.de", "vote":0}]'
-            );
+            return getXdcRoot().xdcUpdates;
         },
         sendUpdate: (description, payload) => {
             // alert(description+"\n\n"+JSON.stringify(payload));
+	    var update = {payload: payload};
+	    getXdcRoot().xdcUpdates.push(update);
             var all = getAllXdcWindows();
             all.forEach((w) => {
                 //alert(w.xdcUpdateListener);
-                w.xdcUpdateListener({payload: payload});
+                w.xdcUpdateListener(update);
             });
         },
     };
 })();
 
 window.allXdcWindows = [window];
+window.xdcUpdates = [];
 window.xdcUpdateListener = 12;
 
 var styleControlPanel = 'position: fixed; bottom:1em; left:1em; background-color: #000; opacity:0.8; padding:.5em; font-family: sans-serif; width: 50%;';
