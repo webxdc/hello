@@ -6,6 +6,7 @@ window.webxdc = (() => {
 
     return {
         selfAddr: () => window.xdcSelfAddr || "device0@local.host",
+        selfName: () => window.xdcSelfName || "device0",
         setUpdateListener: (cb) => (window.xdcUpdateListener = cb),
         getAllUpdates: () => {
             return JSON.parse(
@@ -47,7 +48,8 @@ function addPeer() {
     var xdcChild = window.open(window.location);
     var xdcRoot = getXdcRoot();
     xdcChild.xdcRoot = xdcRoot;
-    xdcChild.xdcSelfAddr = "device" + xdcRoot.allXdcWindows.length + "@local.host";
+    xdcChild.xdcSelfName = "device" + getAllXdcWindows().length;
+    xdcChild.xdcSelfAddr = xdcChild.xdcSelfName + "@local.host";
     xdcRoot.allXdcWindows.push(xdcChild);
 }
 
