@@ -12,11 +12,11 @@
 
     function sendMsg() {
         msg = document.getElementById("input").value;
-        window.webxdc.sendUpdate('someone typed "'+msg+'"', {"addr": window.webxdc.selfAddr(), "msg": msg});
+        window.webxdc.sendUpdate('someone typed "'+msg+'"', {"name": window.webxdc.selfName(), "msg": msg});
     }
 
     function receiveUpdate(update) {
-        document.getElementById('output').innerHTML += "<strong>&lt;" + update.payload.addr + "&gt;</strong> " + update.payload.msg + "<br>";
+        document.getElementById('output').innerHTML += "<strong>&lt;" + update.payload.name + "&gt;</strong> " + update.payload.msg + "<br>";
     }
 
     window.webxdc.setUpdateListener(receiveUpdate);

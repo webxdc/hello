@@ -54,6 +54,7 @@ window.webxdc = (() => {
 
     return {
         selfAddr: () => window.xdcSelfAddr || "device0@local.host",
+        selfName: () => window.xdcSelfName || "device0",
         setUpdateListener: (cb) => (window.xdcUpdateListener = cb),
         getAllUpdates: () => {return getXdcRoot().xdcStorage.getUpdates();},
         sendUpdate: (description, payload) => {
@@ -92,7 +93,8 @@ function addXdcPeer() {
     var xdcChild = window.open(window.location);
     var xdcRoot = getXdcRoot();
     xdcChild.xdcRoot = xdcRoot;
-    xdcChild.xdcSelfAddr = "device" + xdcRoot.allXdcWindows.length + "@local.host";
+    xdcChild.xdcSelfName = "device" + getAllXdcWindows().length;
+    xdcChild.xdcSelfAddr = xdcChild.xdcSelfName + "@local.host";
     xdcRoot.allXdcWindows.push(xdcChild);
 }
 
@@ -104,19 +106,19 @@ function clearXdcStorage() {
 function alterApp() {
     var title = document.getElementsByTagName('title')[0];
     if (typeof title == 'undefined') {
-	title = document.createElement('title');
-	document.getElementsByTagName('head')[0].append(title);
+        title = document.createElement('title');
+        document.getElementsByTagName('head')[0].append(title);
     }
     title.innerText = window.webxdc.selfAddr();
 
-    if (getXdcRoot() == window) {
-	var div = document.createElement('div');
-	div.innerHTML =
-            '<div style="' + styleControlPanel + '">' +
-            '<a href="javascript:addXdcPeer();" style="' + styleMenuLink + '">Add Peer</a> | ' +
-            '<a href="javascript:clearXdcStorage();" style="' + styleMenuLink + '">Clear Storage</a>' +
-            '<div>';
-	document.getElementsByTagName('body')[0].append(div.firstChild);
+    if (getXdcRoot() === window) {
+        var div = document.createElement('div');
+        div.innerHTML =
+                '<div style="' + styleControlPanel + '">' +
+                '<a href="javascript:addXdcPeer();" style="' + styleMenuLink + '">Add Peer</a> | ' +
+                '<a href="javascript:clearXdcStorage();" style="' + styleMenuLink + '">Clear Storage</a>' +
+                '<div>';
+        document.getElementsByTagName('body')[0].append(div.firstChild);
     }
 }
 
