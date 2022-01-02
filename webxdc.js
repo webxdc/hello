@@ -54,18 +54,18 @@ function addPeer() {
 function alterApp() {
     var title = document.getElementsByTagName('title')[0];
     if (typeof title == 'undefined') {
-	title = document.createElement('title');
-	document.getElementsByTagName('head')[0].append(title);
+        title = document.createElement('title');
+        document.getElementsByTagName('head')[0].append(title);
     }
     title.innerText = window.webxdc.selfAddr();
 
-    if (getXdcRoot() == window) {
-	var div = document.createElement('div');
-	div.innerHTML =
-            '<div style="' + styleControlPanel + '">' +
-            '<a href="javascript:addPeer();" style="' + styleMenuLink + '">Add Peer</a>' +
-            '<div>';
-	document.getElementsByTagName('body')[0].append(div.firstChild);
+    if (getXdcRoot() === window) {
+        var div = document.createElement('div');
+        div.innerHTML =
+                '<div style="' + styleControlPanel + '">' +
+                '<a href="javascript:addPeer();" style="' + styleMenuLink + '">Add Peer</a>' +
+                '<div>';
+        document.getElementsByTagName('body')[0].append(div.firstChild);
     }
 }
 
