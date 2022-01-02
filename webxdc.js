@@ -103,7 +103,7 @@ function clearXdcStorage() {
     alert("Done.");
 }
 
-function alterApp() {
+function alterXdcApp() {
     var title = document.getElementsByTagName('title')[0];
     if (typeof title == 'undefined') {
         title = document.createElement('title');
@@ -122,4 +122,4 @@ function alterApp() {
     }
 }
 
-window.addEventListener("load", alterApp);
+window.addEventListener("load", alterXdcApp);
