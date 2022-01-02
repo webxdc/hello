@@ -2,50 +2,50 @@
 window.xdcStorage = (() => {
     var updatesKey = "__xdcUpdatesKey__";
     var fakeStorage = {
-	_data: {},
+        _data: {},
 
-	setItem: function (id, val) {
-	    return this._data[id] = String(val);
-	},
+        setItem: function (id, val) {
+            return this._data[id] = String(val);
+        },
 
-	getItem: function (id) {
-	    return this._data.hasOwnProperty(id) ? this._data[id] : undefined;
-	},
+        getItem: function (id) {
+            return this._data.hasOwnProperty(id) ? this._data[id] : undefined;
+        },
 
-	removeItem: function (id) {
-	    return delete this._data[id];
-	},
+        removeItem: function (id) {
+            return delete this._data[id];
+        },
 
-	clear: function () {
-	    return this._data = {};
-	}
+        clear: function () {
+            return this._data = {};
+        }
     };
     var localStorageSupported = () => {
-	var testKey = "__xdcTestKey__";
-	try {
-	    var storage = window.localStorage;
-	    storage.setItem(testKey, "1");
-	    storage.removeItem(testKey);
-	    return true;
-	} catch (error) {
-	    return false;
-	}
+        var testKey = "__xdcTestKey__";
+        try {
+            var storage = window.localStorage;
+            storage.setItem(testKey, "1");
+            storage.removeItem(testKey);
+            return true;
+        } catch (error) {
+            return false;
+        }
     };
     var storage = localStorageSupported() ? window.localStorage : fakeStorage;
 
     return {
-	getUpdates: () => {
+        getUpdates: () => {
             var updatesJSON = storage.getItem(updatesKey);
             return updatesJSON ? JSON.parse(updatesJSON) : [];
-	},
-	saveUpdate: (update) => {
+        },
+        saveUpdate: (update) => {
             var updates = window.xdcStorage.getUpdates();
             updates.push(update);
             storage.setItem(updatesKey, JSON.stringify(updates));
-	},
-	clear: () => {
-	    storage.clear();
-	}
+        },
+        clear: () => {
+            storage.clear();
+        }
     };
 })();
 
@@ -114,10 +114,10 @@ function alterApp() {
     if (getXdcRoot() === window) {
         var div = document.createElement('div');
         div.innerHTML =
-                '<div style="' + styleControlPanel + '">' +
-                '<a href="javascript:addXdcPeer();" style="' + styleMenuLink + '">Add Peer</a> | ' +
-                '<a href="javascript:clearXdcStorage();" style="' + styleMenuLink + '">Clear Storage</a>' +
-                '<div>';
+            '<div style="' + styleControlPanel + '">' +
+            '<a href="javascript:addXdcPeer();" style="' + styleMenuLink + '">Add Peer</a> | ' +
+            '<a href="javascript:clearXdcStorage();" style="' + styleMenuLink + '">Clear Storage</a>' +
+            '<div>';
         document.getElementsByTagName('body')[0].append(div.firstChild);
     }
 }
