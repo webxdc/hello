@@ -5,7 +5,7 @@ window.webxdc = (() => {
     window.addEventListener('storage', (event) => {
         if (event.key == null) {
             window.location.reload();
-        } else if (event.key == updatesKey) {
+        } else if (event.key === updatesKey) {
             var updates = JSON.parse(event.newValue);
             updateListener(updates[updates.length-1]);
         }
