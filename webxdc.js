@@ -7,6 +7,7 @@ window.webxdc = (() => {
             window.location.reload();
         } else if (event.key === updatesKey) {
             var updates = JSON.parse(event.newValue);
+            console.log("[Webxdc] " + JSON.stringify(update));
             updateListener(updates[updates.length-1]);
         }
     });
@@ -28,6 +29,7 @@ window.webxdc = (() => {
         sendUpdate: (payload, description) => {
             // alert(description+"\n\n"+JSON.stringify(payload));
             var update = {payload: payload};
+            console.log('[Webxdc] description="' + description + '", ' + JSON.stringify(update));
             updateListener(update);
             var updatesJSON = window.localStorage.getItem(updatesKey);
             var updates = updatesJSON ? JSON.parse(updatesJSON) : [];
@@ -59,8 +61,9 @@ window.clearXdcStorage = () => {
 }
 
 window.alterXdcApp = () => {
-    var styleControlPanel = 'position: fixed; bottom:1em; left:1em; background-color: #000; opacity:0.8; padding:.5em; font-family: sans-serif; width: 50%;color:#fff;';
-    var styleMenuLink = 'color:#fff; text-decoration: none;';
+    var styleControlPanel = 'position: fixed; bottom:1em; left:1em; background-color: #000; opacity:0.8; padding:.5em; font-family: sans-serif; color:#fff;';
+    var styleMenuLink = 'color:#fff; text-decoration: none; vertical-align: middle';
+    var styleAppIcon = 'height: 1.5em; width: 1.5em; margin-right: 0.5em; border-radius:10%; vertical-align: middle';
     var title = document.getElementsByTagName('title')[0];
     if (typeof title == 'undefined') {
         title = document.createElement('title');
@@ -72,10 +75,24 @@ window.alterXdcApp = () => {
         var div = document.createElement('div');
         div.innerHTML =
             '<div style="' + styleControlPanel + '">' +
-            '<a href="javascript:window.addXdcPeer();" style="' + styleMenuLink + '">Add Peer</a> | ' +
+            '<a href="javascript:window.addXdcPeer();" style="' + styleMenuLink + '">Add Peer</a>' +
+            '<span style="' + styleMenuLink + '"> | </span>' +
             '<a href="javascript:window.clearXdcStorage();" style="' + styleMenuLink + '">Clear Storage</a>' +
             '<div>';
-        document.getElementsByTagName('body')[0].append(div.firstChild);
+        var controlPanel = div.firstChild;
+
+        function loadIcon(name) {
+            var tester = new Image();
+            tester.onload = () => {
+                div.innerHTML = '<img src="' + name + '" style="' + styleAppIcon +'">';
+                controlPanel.insertBefore(div.firstChild, controlPanel.firstChild);
+            };
+            tester.src = name;
+        }
+        loadIcon("icon.png");
+        loadIcon("icon.jpg");
+
+        document.getElementsByTagName('body')[0].append(controlPanel);
     }
 }
 
