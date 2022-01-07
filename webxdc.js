@@ -1,109 +1,66 @@
 // debug friend: document.writeln(JSON.stringify(value));
-window.xdcStorage = (() => {
-    var updatesKey = "__xdcUpdatesKey__";
-    var fakeStorage = {
-        _data: {},
-
-        setItem: function (id, val) {
-            return this._data[id] = String(val);
-        },
-
-        getItem: function (id) {
-            return this._data.hasOwnProperty(id) ? this._data[id] : undefined;
-        },
-
-        removeItem: function (id) {
-            return delete this._data[id];
-        },
-
-        clear: function () {
-            return this._data = {};
-        }
-    };
-    var localStorageSupported = () => {
-        var testKey = "__xdcTestKey__";
-        try {
-            var storage = window.localStorage;
-            storage.setItem(testKey, "1");
-            storage.removeItem(testKey);
-            return true;
-        } catch (error) {
-            return false;
-        }
-    };
-    var storage = localStorageSupported() ? window.localStorage : fakeStorage;
-
-    return {
-        getUpdates: () => {
-            var updatesJSON = storage.getItem(updatesKey);
-            return updatesJSON ? JSON.parse(updatesJSON) : [];
-        },
-        saveUpdate: (update) => {
-            var updates = window.xdcStorage.getUpdates();
-            updates.push(update);
-            storage.setItem(updatesKey, JSON.stringify(updates));
-        },
-        clear: () => {
-            storage.clear();
-        }
-    };
-})();
-
 window.webxdc = (() => {
     var updateListener = () => {};
+    var updatesKey = "__xdcUpdatesKey__";
+    window.addEventListener('storage', (event) => {
+        if (event.key == null) {
+            window.location.reload();
+        } else if (event.key === updatesKey) {
+            var updates = JSON.parse(event.newValue);
+            updateListener(updates[updates.length-1]);
+        }
+    });
 
     return {
-        selfAddr: () => window.xdcSelfAddr || "device0@local.host",
-        selfName: () => window.xdcSelfName || "device0",
-        setUpdateListener: (cb) => (window.xdcUpdateListener = cb),
-        getAllUpdates: () => {return getXdcRoot().xdcStorage.getUpdates();},
+        selfAddr: () => {
+            var params = new URLSearchParams(window.location.hash.substr(1));
+            return params.get("addr") || "device0@local.host";
+        },
+        selfName: () => {
+            var params = new URLSearchParams(window.location.hash.substr(1));
+            return params.get("name") || "device0";
+        },
+        setUpdateListener: (cb) => (updateListener = cb),
+        getAllUpdates: () => {
+            var updatesJSON = window.localStorage.getItem(updatesKey);
+            return updatesJSON ? JSON.parse(updatesJSON) : [];
+        },
         sendUpdate: (description, payload) => {
             // alert(description+"\n\n"+JSON.stringify(payload));
             var update = {payload: payload};
-            getXdcRoot().xdcStorage.saveUpdate(update);
-            var all = getAllXdcWindows();
-            all.forEach((w) => {
-                //alert(w.xdcUpdateListener);
-                w.xdcUpdateListener(update);
-            });
+            updateListener(update);
+            var updatesJSON = window.localStorage.getItem(updatesKey);
+            var updates = updatesJSON ? JSON.parse(updatesJSON) : [];
+            updates.push(update);
+            window.localStorage.setItem(updatesKey, JSON.stringify(updates));
         },
     };
 })();
 
-window.allXdcWindows = [window];
-window.xdcUpdateListener = 12;
+window.addXdcPeer = () => {
+    var loc = window.location;
+    // get next peer ID
+    var params = new URLSearchParams(loc.hash.substr(1));
+    var peerId = Number(params.get("next_peer")) || 1;
 
-var styleControlPanel = 'position: fixed; bottom:1em; left:1em; background-color: #000; opacity:0.8; padding:.5em; font-family: sans-serif; width: 50%;color:#fff;';
-var styleMenuLink     = 'color:#fff; text-decoration: none;';
+    // open a new window
+    var peerName = "device" + peerId;
+    var url = loc.protocol + "//" + loc.host + loc.pathname + "#name=" + peerName + "&addr=" + peerName + "@local.host";
+    window.open(url);
 
-function getXdcRoot() {
-    var test = window;
-    while (typeof test.xdcRoot != 'undefined') {
-        test = test.xdcRoot;
-    }
-    return test;
+    // update next peer ID
+    params.set("next_peer", peerId + 1);
+    window.location.hash = "#" + params.toString();
 }
 
-function getAllXdcWindows() {
-    var xdcRoot = getXdcRoot();
-    return xdcRoot.allXdcWindows;
+window.clearXdcStorage = () => {
+    window.localStorage.clear();
+    window.location.reload();
 }
 
-function addXdcPeer() {
-    var xdcChild = window.open(window.location);
-    var xdcRoot = getXdcRoot();
-    xdcChild.xdcRoot = xdcRoot;
-    xdcChild.xdcSelfName = "device" + getAllXdcWindows().length;
-    xdcChild.xdcSelfAddr = xdcChild.xdcSelfName + "@local.host";
-    xdcRoot.allXdcWindows.push(xdcChild);
-}
-
-function clearXdcStorage() {
-    getXdcRoot().xdcStorage.clear();
-    alert("Done.");
-}
-
-function alterXdcApp() {
+window.alterXdcApp = () => {
+    var styleControlPanel = 'position: fixed; bottom:1em; left:1em; background-color: #000; opacity:0.8; padding:.5em; font-family: sans-serif; width: 50%;color:#fff;';
+    var styleMenuLink = 'color:#fff; text-decoration: none;';
     var title = document.getElementsByTagName('title')[0];
     if (typeof title == 'undefined') {
         title = document.createElement('title');
@@ -111,15 +68,15 @@ function alterXdcApp() {
     }
     title.innerText = window.webxdc.selfAddr();
 
-    if (getXdcRoot() === window) {
+    if (window.webxdc.selfName() === "device0") {
         var div = document.createElement('div');
         div.innerHTML =
             '<div style="' + styleControlPanel + '">' +
-            '<a href="javascript:addXdcPeer();" style="' + styleMenuLink + '">Add Peer</a> | ' +
-            '<a href="javascript:clearXdcStorage();" style="' + styleMenuLink + '">Clear Storage</a>' +
+            '<a href="javascript:window.addXdcPeer();" style="' + styleMenuLink + '">Add Peer</a> | ' +
+            '<a href="javascript:window.clearXdcStorage();" style="' + styleMenuLink + '">Clear Storage</a>' +
             '<div>';
         document.getElementsByTagName('body')[0].append(div.firstChild);
     }
 }
 
-window.addEventListener("load", alterXdcApp);
+window.addEventListener("load", window.alterXdcApp);
