@@ -68,7 +68,7 @@ window.alterXdcApp = () => {
     }
     title.innerText = window.webxdc.selfAddr();
 
-    if (window.webxdc.selfName() == "device0") {
+    if (window.webxdc.selfName() === "device0") {
         var div = document.createElement('div');
         div.innerHTML =
             '<div style="' + styleControlPanel + '">' +
