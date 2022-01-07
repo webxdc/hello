@@ -7,6 +7,7 @@ window.webxdc = (() => {
             window.location.reload();
         } else if (event.key === updatesKey) {
             var updates = JSON.parse(event.newValue);
+            console.log("[Webxdc] " + JSON.stringify(update));
             updateListener(updates[updates.length-1]);
         }
     });
@@ -28,6 +29,7 @@ window.webxdc = (() => {
         sendUpdate: (payload, description) => {
             // alert(description+"\n\n"+JSON.stringify(payload));
             var update = {payload: payload};
+            console.log('[Webxdc] description="' + description + '", ' + JSON.stringify(update));
             updateListener(update);
             var updatesJSON = window.localStorage.getItem(updatesKey);
             var updates = updatesJSON ? JSON.parse(updatesJSON) : [];
