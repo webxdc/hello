@@ -7,8 +7,9 @@ window.webxdc = (() => {
             window.location.reload();
         } else if (event.key === updatesKey) {
             var updates = JSON.parse(event.newValue);
+            var update = updates[updates.length-1];
             console.log("[Webxdc] " + JSON.stringify(update));
-            updateListener(updates[updates.length-1]);
+            updateListener(update);
         }
     });
 
