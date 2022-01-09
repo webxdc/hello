@@ -6,10 +6,10 @@ case "$1" in
         exit
         ;;
     "")
-        PACKAGE_NAME=${PWD##*/}
+        PACKAGE_NAME=${PWD##*/} # '##*/' removes everything before the last slash and the last slash
         ;;
     *)
-        PACKAGE_NAME=$1
+        PACKAGE_NAME=${1%.xdc} # '%.xdc' removes the extension and allows PACKAGE_NAME to be given with or without extension
         ;;
 esac
 
