@@ -10,7 +10,7 @@ no server or installation required.
 
 - include your `webxdc.js` to your `index.html` as usual
 - open your `index.html` from your local disk in your browser,
-  tested with Firefox.
+  (tested with Firefox and Chrome, for Safari, enable "Develop / Disable Local File Restrictions")
 - the emulation layer will add an "add peer" button,
   open as many peers as you like
 - once you call sendUpdate() in on peer,
