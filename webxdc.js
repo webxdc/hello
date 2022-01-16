@@ -27,9 +27,9 @@ window.webxdc = (() => {
             var updatesJSON = window.localStorage.getItem(updatesKey);
             return updatesJSON ? JSON.parse(updatesJSON) : [];
         },
-        sendUpdate: (payload, description) => {
+        sendUpdate: (update, description) => {
             // alert(description+"\n\n"+JSON.stringify(payload));
-            var update = {payload: payload};
+            update = {payload: update.payload, summary: update.summary, info: update.info}
             console.log('[Webxdc] description="' + description + '", ' + JSON.stringify(update));
             updateListener(update);
             var updatesJSON = window.localStorage.getItem(updatesKey);
