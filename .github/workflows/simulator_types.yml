@@ -20,4 +20,4 @@ jobs:
           npm i -g typescript
       - name: check if simulator (webxdc.js) and types (webxdc.d.ts) are in sync
         run: |
-          tsc --noEmit --allowJs webxdc.js
+          tsc --noEmit --allowJs --lib es2015,dom webxdc.js
