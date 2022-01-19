@@ -13,8 +13,15 @@ case "$1" in
         ;;
 esac
 
-rm $PACKAGE_NAME.xdc 2> /dev/null
-zip -9 --recurse-paths $PACKAGE_NAME.xdc * --exclude README.md webxdc.js "*.sh" "*.xdc"
+rm "$PACKAGE_NAME.xdc" 2> /dev/null
+zip -9 --recurse-paths "$PACKAGE_NAME.xdc" * --exclude README.md webxdc.js "*.sh" "*.xdc"
 
 echo "success, archive contents:"
-unzip -l $PACKAGE_NAME.xdc
+unzip -l "$PACKAGE_NAME.xdc"
+
+# check package size
+MAXSIZE=102400
+size=$(wc -c < "$PACKAGE_NAME.xdc")
+if [ $size -ge $MAXSIZE ]; then
+    echo "WARNING: package size exceeded the limit ($size > $MAXSIZE)"
+fi
