@@ -9,7 +9,6 @@
         <a href="" onclick="sendMsg(); return false;">Send</a>
         <p id="output"></p>
         <script>
-
          function sendMsg() {
              msg = document.getElementById("input").value;
              window.webxdc.sendUpdate({payload: {name: window.webxdc.selfName(), msg: msg}}, 'someone typed "'+msg+'"');
