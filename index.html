@@ -1,27 +1,26 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <meta charset="utf-8"/>
-    <script src="webxdc.js"></script>
-</head>
-<body>
-<input id="input" type="text"/>
-<a href="" onclick="sendMsg(); return false;">Send</a>
-<p id="output"></p>
-<script>
+    <head>
+        <meta charset="utf-8"/>
+        <script src="webxdc.js"></script>
+    </head>
+    <body>
+        <input id="input" type="text"/>
+        <a href="" onclick="sendMsg(); return false;">Send</a>
+        <p id="output"></p>
+        <script>
 
-    function sendMsg() {
-        msg = document.getElementById("input").value;
-        window.webxdc.sendUpdate({payload: {name: window.webxdc.selfName(), msg: msg}}, 'someone typed "'+msg+'"');
-    }
+         function sendMsg() {
+             msg = document.getElementById("input").value;
+             window.webxdc.sendUpdate({payload: {name: window.webxdc.selfName(), msg: msg}}, 'someone typed "'+msg+'"');
+         }
 
-    function receiveUpdate(update) {
-        document.getElementById('output').innerHTML += "<strong>&lt;" + update.payload.name + "&gt;</strong> " + update.payload.msg + "<br>";
-    }
+         function receiveUpdate(update) {
+             document.getElementById('output').innerHTML += "<strong>&lt;" + update.payload.name + "&gt;</strong> " + update.payload.msg + "<br>";
+         }
 
-    window.webxdc.setUpdateListener(receiveUpdate);
-    window.webxdc.getAllUpdates().forEach(receiveUpdate);
-
-</script>
-</body>
+         window.webxdc.setUpdateListener(receiveUpdate);
+         window.webxdc.getAllUpdates().forEach(receiveUpdate);
+        </script>
+    </body>
 </html>
