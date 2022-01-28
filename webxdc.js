@@ -15,19 +15,14 @@ window.webxdc = (() => {
         }
     });
 
+    var params = new URLSearchParams(window.location.hash.substr(1));
     return {
-        selfAddr: () => {
-            var params = new URLSearchParams(window.location.hash.substr(1));
-            return params.get("addr") || "device0@local.host";
-        },
-        selfName: () => {
-            var params = new URLSearchParams(window.location.hash.substr(1));
-            return params.get("name") || "device0";
-        },
+        selfAddr: params.get("addr") || "device0@local.host",
+        selfName: params.get("name") || "device0",
         setUpdateListener: (cb) => (updateListener = cb),
         getAllUpdates: () => {
             var updatesJSON = window.localStorage.getItem(updatesKey);
-            return updatesJSON ? JSON.parse(updatesJSON) : [];
+            return Promise.resolve(updatesJSON ? JSON.parse(updatesJSON) : []);
         },
         sendUpdate: (update, description) => {
             // alert(description+"\n\n"+JSON.stringify(payload));
@@ -72,9 +67,9 @@ window.alterXdcApp = () => {
         title = document.createElement('title');
         document.getElementsByTagName('head')[0].append(title);
     }
-    title.innerText = window.webxdc.selfAddr();
+    title.innerText = window.webxdc.selfAddr;
 
-    if (window.webxdc.selfName() === "device0") {
+    if (window.webxdc.selfName === "device0") {
         var div = document.createElement('div');
         div.innerHTML =
             '<div style="' + styleControlPanel + '">' +
