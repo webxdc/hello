@@ -11,7 +11,7 @@
         <script>
          function sendMsg() {
              msg = document.getElementById("input").value;
-             window.webxdc.sendUpdate({payload: {name: window.webxdc.selfName(), msg: msg}}, 'someone typed "'+msg+'"');
+             window.webxdc.sendUpdate({payload: {name: window.webxdc.selfName, msg: msg}}, 'someone typed "'+msg+'"');
          }
 
          function receiveUpdate(update) {
@@ -19,7 +19,7 @@
          }
 
          window.webxdc.setUpdateListener(receiveUpdate);
-         window.webxdc.getAllUpdates().forEach(receiveUpdate);
+         window.webxdc.getAllUpdates().then(updates => updates.forEach(receiveUpdate));
         </script>
     </body>
 </html>
