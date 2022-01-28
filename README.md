@@ -21,3 +21,22 @@ and send it to your friends :)
 
 note, that the api is not yet complete,
 this is just a, maybe already useful, proof-of-concept for now.
+
+## use type-checking and completion
+
+If you are using vscode you can have autocompletion and type-checking even without using typescript.
+
+just add these two lines to your javascript source files:
+
+```js
+//@ts-check
+/** @typedef {import('./webxdc').WEBxDC} WEBxDC */
+```
+
+Without vscode you need to install typescript and then run the check manually.
+
+```sh
+npm -g typescript
+tsc --noEmit --allowJs --lib es2015,dom webxdc.js # to check if types and simulator are in sync
+tsc --noEmit --allowJs --lib es2015,dom your_js_file.js
+```

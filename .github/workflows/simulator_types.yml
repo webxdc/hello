@@ -1,0 +1,23 @@
+name: Are types and sim in sync?
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js 14.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14.x
+      - name: install typescript
+        run: |
+          npm i -g typescript
+      - name: check if simulator (webxdc.js) and types (webxdc.d.ts) are in sync
+        run: |
+          tsc --noEmit --allowJs --lib es2015,dom webxdc.js
