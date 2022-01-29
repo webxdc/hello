@@ -30,7 +30,7 @@ just add these two lines to your javascript source files:
 
 ```js
 //@ts-check
-/** @typedef {import('./webxdc').Webxdc} WEBxDC */
+/** @typedef {import('./webxdc').Webxdc} Webxdc */
 ```
 
 Without vscode you need to install typescript and then run the check manually.
