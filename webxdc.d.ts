@@ -18,6 +18,10 @@ type SendingStatusUpdate<T> = {
 type ReceivedStatusUpdate<T> = {
   /** the payload, deserialized json */
   payload: T;
+  /** the serial number of this update. Serials are larger than 0 and newer serials have higher numbers */
+  serial: number;
+  /** the maximum serial currently known */
+  max_serial: number;
 };
 
 interface Webxdc<T> {
@@ -28,13 +32,13 @@ interface Webxdc<T> {
   /** Returns the peer's own name. This is name chosen by the user in their settings, if there is nothing set, that defaults to the peer's address. */
   selfName: string;
   /**
-   * set a listener for new status updates
-   * note that own status updates, that you send with {@link sendUpdate}, also trigger this method
+   * set a listener for new status updates.
+   * The "serial" specifies the last serial that you know about (defaults to 0).
+   * Note that own status updates, that you send with {@link sendUpdate}, also trigger this method
    * */
-  setUpdateListener(cb: (statusUpdate: ReceivedStatusUpdate<T>) => void): void;
+  setUpdateListener(cb: (statusUpdate: ReceivedStatusUpdate<T>) => void, serial: number): void;
   /**
-   * In case your Webxdc was just started,
-   * you may want to reconstruct the status from the last run - and also incorporate updates that may have arrived while the app was not running.
+   * WARNING! This function is deprecated, see setUpdateListener().
    */
   getAllUpdates(): Promise<ReceivedStatusUpdate<T>[]>;
   /**

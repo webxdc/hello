@@ -10,29 +10,45 @@ window.webxdc = (() => {
         } else if (event.key === updatesKey) {
             var updates = JSON.parse(event.newValue);
             var update = updates[updates.length-1];
+            update.max_serial = updates.length;
             console.log("[Webxdc] " + JSON.stringify(update));
             updateListener(update);
         }
     });
 
+    function getUpdates() {
+        var updatesJSON = window.localStorage.getItem(updatesKey);
+        return updatesJSON ? JSON.parse(updatesJSON) : [];
+    }
+
     var params = new URLSearchParams(window.location.hash.substr(1));
     return {
         selfAddr: params.get("addr") || "device0@local.host",
         selfName: params.get("name") || "device0",
-        setUpdateListener: (cb) => (updateListener = cb),
+        setUpdateListener: (cb, serial) => {
+            var updates = getUpdates();
+            var maxSerial = updates.length;
+            updates.forEach((update) => {
+                if (update.serial > serial) {
+                    update.max_serial = maxSerial;
+                    cb(update);
+                }
+            });
+            updateListener = cb;
+        },
         getAllUpdates: () => {
-            var updatesJSON = window.localStorage.getItem(updatesKey);
-            return Promise.resolve(updatesJSON ? JSON.parse(updatesJSON) : []);
+            console.log('[Webxdc] WARNING: getAllUpdates() is deprecated.');
+            return Promise.resolve([]);
         },
         sendUpdate: (update, description) => {
-            // alert(description+"\n\n"+JSON.stringify(payload));
-            update = {payload: update.payload, summary: update.summary, info: update.info}
-            console.log('[Webxdc] description="' + description + '", ' + JSON.stringify(update));
-            updateListener(update);
-            var updatesJSON = window.localStorage.getItem(updatesKey);
-            var updates = updatesJSON ? JSON.parse(updatesJSON) : [];
-            updates.push(update);
+            var updates = getUpdates();
+            var serial = updates.length + 1;
+            var _update = {payload: update.payload, summary: update.summary, info: update.info, serial: serial};
+            updates.push(_update);
             window.localStorage.setItem(updatesKey, JSON.stringify(updates));
+            _update.max_serial = serial;
+            console.log('[Webxdc] description="' + description + '", ' + JSON.stringify(_update));
+            updateListener(_update);
         },
     };
 })();

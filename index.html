@@ -18,8 +18,7 @@
              document.getElementById('output').innerHTML += "<strong>&lt;" + update.payload.name + "&gt;</strong> " + update.payload.msg + "<br>";
          }
 
-         window.webxdc.setUpdateListener(receiveUpdate);
-         window.webxdc.getAllUpdates().then(updates => updates.forEach(receiveUpdate));
+         window.webxdc.setUpdateListener(receiveUpdate, 0);
         </script>
     </body>
 </html>
