@@ -22,6 +22,10 @@ type ReceivedStatusUpdate<T> = {
   serial: number;
   /** the maximum serial currently known */
   max_serial: number;
+  /** optional, short, informational message. */
+  info?: string;
+  /** optional, short text, shown beside app icon. If there are no updates, an empty JSON-array is returned. */
+  summary?: string;
 };
 
 interface Webxdc<T> {
