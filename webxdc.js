@@ -25,7 +25,7 @@ window.webxdc = (() => {
     return {
         selfAddr: params.get("addr") || "device0@local.host",
         selfName: params.get("name") || "device0",
-        setUpdateListener: (cb, serial) => {
+        setUpdateListener: (cb, serial = 0) => {
             var updates = getUpdates();
             var maxSerial = updates.length;
             updates.forEach((update) => {
