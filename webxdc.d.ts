@@ -40,7 +40,7 @@ interface Webxdc<T> {
    * The "serial" specifies the last serial that you know about (defaults to 0).
    * Note that own status updates, that you send with {@link sendUpdate}, also trigger this method
    * */
-  setUpdateListener(cb: (statusUpdate: ReceivedStatusUpdate<T>) => void, serial?: number): void;
+  setUpdateListener(cb: (statusUpdate: ReceivedStatusUpdate<T>) => void, serial?: number): Promise<void>;
   /**
    * WARNING! This function is deprecated, see setUpdateListener().
    */
