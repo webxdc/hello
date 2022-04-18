@@ -39,6 +39,7 @@ interface Webxdc<T> {
    * set a listener for new status updates.
    * The "serial" specifies the last serial that you know about (defaults to 0).
    * Note that own status updates, that you send with {@link sendUpdate}, also trigger this method
+   * @returns promise that resolves when the listener has processed all the update messages known at the time when `setUpdateListener` was called.
    * */
   setUpdateListener(cb: (statusUpdate: ReceivedStatusUpdate<T>) => void, serial?: number): Promise<void>;
   /**
