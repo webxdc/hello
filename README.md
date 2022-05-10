@@ -13,10 +13,10 @@ Simply copy `webxdc.js` from this repo beside your `index.html` and you are read
 Bundle your app using `./create-xdc.sh your-app-name`
 and send it to your friends :)
 
-*Note:* the API is still under development and
-this is just a proof-of-concept for now.
+*Note: the API is still under development and
+this is just a proof-of-concept for now.*
 
-## Type-checking and completion
+### Type-checking and completion
 
 If you are using VSCode you can have autocompletion and type-checking even without using TypeScript by adding these two lines to your JavaScript source files:
 
