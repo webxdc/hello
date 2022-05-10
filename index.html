@@ -17,6 +17,7 @@
             <input type="submit" onclick="sendMsg(); return false;" value="Send" />
         </form>
         <p id="output"></p>
+        <p><em><small id="deviceName"></small></em></p>
         <script>
         // handle past and future state updates
         window.webxdc.setUpdateListener(function (update) {
@@ -37,6 +38,10 @@
                 info,
             }, info);
         }
+
+        (function () {
+            window.deviceName.innerHTML = 'this is ' + window.webxdc.selfName;
+        })()
         </script>
     </body>
 </html>
