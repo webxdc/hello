@@ -11,15 +11,21 @@
         </form>
         <p id="output"></p>
         <script>
-         function sendMsg() {
-             msg = document.getElementById("input").value;
-             window.webxdc.sendUpdate({payload: {name: window.webxdc.selfName, msg: msg}}, 'someone typed "'+msg+'"');
-             document.getElementById("input").value = '';
-         }
+        function sendMsg() {
+            msg = document.getElementById("input").value;
+            window.webxdc.sendUpdate({
+                payload: {
+                    name: window.webxdc.selfName,
+                    msg: msg,
+                },
+            }, 'someone typed "' + msg + '"');
 
-         window.webxdc.setUpdateListener(function (update) {
-             document.getElementById('output').innerHTML += "<strong>&lt;" + update.payload.name + "&gt;</strong> " + update.payload.msg + "<br>";
-         });
+            document.getElementById("input").value = '';
+        }
+
+        window.webxdc.setUpdateListener(function (update) {
+            document.getElementById('output').innerHTML += "<strong>&lt;" + update.payload.name + "&gt;</strong> " + update.payload.msg + "<br>";
+        });
         </script>
     </body>
 </html>
