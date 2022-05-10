@@ -20,7 +20,7 @@
         <script>
         // handle past and future state updates
         window.webxdc.setUpdateListener(function (update) {
-            document.getElementById('output').innerHTML += "<strong>&lt;" + update.payload.name + "&gt;</strong> " + update.payload.msg + "<br>";
+            document.getElementById('output').innerHTML += "<strong>" + update.payload.name + ":</strong> " + update.payload.msg + "<br>";
         });
 
         function sendMsg() {
