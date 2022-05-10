@@ -13,21 +13,23 @@
         </form>
         <p id="output"></p>
         <script>
-        function sendMsg() {
-            msg = document.getElementById("input").value;
-            window.webxdc.sendUpdate({
-                payload: {
-                    name: window.webxdc.selfName,
-                    msg: msg,
-                },
-            }, 'someone typed "' + msg + '"');
-
-            document.getElementById("input").value = '';
-        }
-
+        // handle past and future state updates
         window.webxdc.setUpdateListener(function (update) {
             document.getElementById('output').innerHTML += "<strong>&lt;" + update.payload.name + "&gt;</strong> " + update.payload.msg + "<br>";
         });
+
+        function sendMsg() {
+            msg = document.getElementById("input").value;
+            document.getElementById("input").value = '';
+
+            // send new updates
+            window.webxdc.sendUpdate({
+                payload: {
+                    name: window.webxdc.selfName,
+                    msg,
+                },
+            }, 'someone typed "' + msg + '"');
+        }
         </script>
     </body>
 </html>
