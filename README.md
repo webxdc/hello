@@ -11,7 +11,7 @@
 Simply copy `webxdc.js` from this repo beside your `index.html` and you are ready to go.
 
 Bundle your app using `./create-xdc.sh your-app-name`
-and send it to your friends :)
+and send it to your friends 🙂
 
 *Note: the API is still under development and
 this is just a proof-of-concept for now.*
