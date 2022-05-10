@@ -2,7 +2,7 @@
 
 ## Demo (no server or installation required)
 
-1. Open `index.html`
+1. Open `index.html` in your web browser
 2. Click 'Add Peer' to open as many peers as you like
 3. Type a message and press 'Send' to see the update in each peer. (For Safari you might need to check the setting under Develop > Disable Local File Restrictions.)
 
