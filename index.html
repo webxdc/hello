@@ -17,11 +17,9 @@
              document.getElementById("input").value = '';
          }
 
-         function receiveUpdate(update) {
+         window.webxdc.setUpdateListener(function (update) {
              document.getElementById('output').innerHTML += "<strong>&lt;" + update.payload.name + "&gt;</strong> " + update.payload.msg + "<br>";
-         }
-
-         window.webxdc.setUpdateListener(receiveUpdate, 0);
+         });
         </script>
     </body>
 </html>
