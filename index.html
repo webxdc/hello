@@ -5,8 +5,10 @@
         <script src="webxdc.js"></script>
     </head>
     <body>
-        <input id="input" type="text"/>
-        <a href="" onclick="sendMsg(); return false;">Send</a>
+        <form>
+            <input id="input" type="text"/>
+            <input type="submit" onclick="sendMsg();" value="Send" />
+        </form>
         <p id="output"></p>
         <script>
          function sendMsg() {
