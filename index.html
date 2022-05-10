@@ -20,6 +20,7 @@
 
         function sendMsg() {
             msg = document.getElementById("input").value;
+            info = 'someone typed "' + msg + '"';
             document.getElementById("input").value = '';
 
             // send new updates
@@ -28,7 +29,8 @@
                     name: window.webxdc.selfName,
                     msg,
                 },
-            }, 'someone typed "' + msg + '"');
+                info,
+            }, info);
         }
         </script>
     </body>
