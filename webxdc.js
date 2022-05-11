@@ -89,10 +89,10 @@ window.alterXdcApp = () => {
     if (window.webxdc.selfName === "device0") {
         var div = document.createElement('div');
         div.innerHTML =
-            '<div style="' + styleControlPanel + '">' +
+            '<div id="webxdc-panel" style="' + styleControlPanel + '">' +
             '<a href="javascript:window.addXdcPeer();" style="' + styleMenuLink + '">Add Peer</a>' +
             '<span style="' + styleMenuLink + '"> | </span>' +
-            '<a href="javascript:window.clearXdcStorage();" style="' + styleMenuLink + '">Clear Storage</a>' +
+            '<a id="webxdc-panel-clear" href="javascript:window.clearXdcStorage();" style="' + styleMenuLink + '">Clear Storage</a>' +
             '<div>';
         var controlPanel = div.firstChild;
 
