@@ -9,6 +9,9 @@ type SendingStatusUpdate<T> = {
    * usually only one line of text is shown,
    * use this option sparingly to not spam the chat. */
   info?: string;
+  /** optional, if the Webxdc creates a document, you can set this to the name of the document;
+   * do not set if the Webxdc does not create a document */
+  document?: string;
   /** optional, short text, shown beside app icon;
    * it is recommended to use some aggregated value,
    * eg. "8 votes", "Highscore: 123" */
@@ -24,6 +27,9 @@ type ReceivedStatusUpdate<T> = {
   max_serial: number;
   /** optional, short, informational message. */
   info?: string;
+  /** optional, if the Webxdc creates a document, this is the name of the document;
+   * not set if the Webxdc does not create a document */
+  document?: string;
   /** optional, short text, shown beside app icon. */
   summary?: string;
 };
