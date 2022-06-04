@@ -1,1 +1,4 @@
 name = "Hello"
+
+# uncomment the following line and set it your source repo; it is shown in the Webxdc's menu then
+#source_code_url = "https://gitsth.org/your/repo"

@@ -32,3 +32,14 @@ npm -g typescript
 tsc --noEmit --allowJs --lib es2015,dom webxdc.js # to check if types and simulator are in sync
 tsc --noEmit --allowJs --lib es2015,dom your_js_file.js
 ```
+
+
+## limitations
+
+due to the nature of most browsers and how they scope `localStorage`,
+each emulated peer will get the same `localStorage`.
+
+to really test the storage usage of your Webxdc,
+bundle the app and test it in Delta Chat directly
+where all peers get their own `localStorage`.
+
