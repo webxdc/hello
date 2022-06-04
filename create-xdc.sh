@@ -14,7 +14,7 @@ case "$1" in
 esac
 
 rm "$PACKAGE_NAME.xdc" 2> /dev/null
-zip -9 --recurse-paths "$PACKAGE_NAME.xdc" * --exclude README.md webxdc.js webxdc.d.ts "*.sh" "*.xdc"
+zip -9 --recurse-paths "$PACKAGE_NAME.xdc" * --exclude LICENSE README.md webxdc.js webxdc.d.ts "*.sh" "*.xdc"
 
 echo "success, archive contents:"
 unzip -l "$PACKAGE_NAME.xdc"
