@@ -1,37 +1,31 @@
-# Webxdc Development Tool
+# webxdc Hello
 
-this is a little tool to make development of webxdc apps easier.
+## Demo (no server or installation required)
 
-for developing webxdc apps,
-just copy the `webxdc.js` from this repo beside
-your `index.html` and you are ready to go.
+1. Open `index.html` in your web browser
+2. Click 'Add Peer' to open as many peers as you like
+3. Type a message and press 'Send' to see the update in each peer. (For Safari you might need to check the setting under Develop > Disable Local File Restrictions.)
 
-no server or installation required.
+## Developing webxdc apps
 
-- include your `webxdc.js` to your `index.html` as usual
-- open your `index.html` from your local disk in your browser,
-  (tested with Firefox and Chrome, for Safari, enable "Develop / Disable Local File Restrictions")
-- the emulation layer will add an "add peer" button,
-  open as many peers as you like
-- once you call sendUpdate() in on peer,
-  all peers will get the update with their update listeners.
+Simply copy `webxdc.js` from this repo beside your `index.html` and you are ready to go.
 
-when your app is done, you can bundle it using `./create-xdc.sh your-app-name`
-and send it to your friends :)
+Bundle your app using `./create-xdc.sh your-app-name`
+and send it to your friends 🙂
 
+*Note: the API is still under development and
+this is just a proof-of-concept for now.*
 
-## use type-checking and completion
+### Type-checking and completion
 
-If you are using vscode you can have autocompletion and type-checking even without using typescript.
-
-just add these two lines to your javascript source files:
+If you are using VSCode you can have autocompletion and type-checking even without using TypeScript by adding these two lines to your JavaScript source files:
 
 ```js
 //@ts-check
 /** @typedef {import('./webxdc').Webxdc} Webxdc */
 ```
 
-Without vscode you need to install typescript and then run the check manually.
+Without VSCode you need to install TypeScript and then run the check manually.
 
 ```sh
 npm -g typescript
