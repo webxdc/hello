@@ -1,4 +1,6 @@
-# webxdc Hello
+# Hello
+
+Sample project with a simple implementation of the webxdc read and write APIs.
 
 ## Demo (no server or installation required)
 
