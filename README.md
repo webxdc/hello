@@ -35,6 +35,37 @@ tsc --noEmit --allowJs --lib es2015,dom webxdc.js # to check if types and simula
 tsc --noEmit --allowJs --lib es2015,dom your_js_file.js
 ```
 
+### Developing in Safari
+
+To use the devtool in safari you need to disable the local file restrictions
+under `Develop` -> `Disable Local File Restrictions`:
+
+<p>
+<img
+src="images/dev_tool_settings_safari.png"
+alt="'Disable Local File Restrictions' entry in the 'Develop' menu in safari"
+style="max-height:40vh"
+/>
+</p>
+
+After doing this you can use the dev tool simulator.
+
+Make sure to reload (`Cmd + R`) all simulator tabs/windows to apply this setting.
+Without this option `Add Peer` seems to work (it opens a new instance), but **the instances will not be able to communicate**.
+
+### Developing on Android
+
+TODO - turn notes into a nice guide
+
+- install Termux
+- install python & git in termux (or is it preinstalled??)
+- git clone the devtool repo or your fork of it
+- use `python -m http.server` (TODO check complete syntax) to serve it for development and use nano / vim
+- when your done use the packaging script
+- and then copy the file to a location from where you can access and send it via deltachat.
+
+- pro tip: you can create symbolic link to a folder in the external storage
+
 
 ## limitations
 
