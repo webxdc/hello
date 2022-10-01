@@ -21,8 +21,21 @@
         <p><em><small id="deviceName"></small></em></p>
         <script>
         // handle past and future state updates
+        var El = function (tag, text) {
+            var el = document.createElement(tag);
+            el.innerText = text || '';
+            return el;
+        };
+
         window.webxdc.setUpdateListener(function (update) {
-            document.getElementById('output').innerHTML += "<strong>" + update.payload.name + ":</strong> " + update.payload.msg + "<br>";
+            var output = document.getElementById('output');
+            [
+                El('strong', update.payload.name + ':'),
+                El('span', update.payload.msg),
+                El('br'),
+            ].forEach(function (item) {
+                output.appendChild(item);
+            });
         });
 
         function sendMsg() {
@@ -41,7 +54,7 @@
         }
 
         (function () {
-            window.deviceName.innerHTML = 'this is ' + window.webxdc.selfName;
+            window.deviceName.innerText = 'this is ' + window.webxdc.selfName;
         })()
         </script>
     </body>
