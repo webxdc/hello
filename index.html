@@ -20,15 +20,21 @@
         <p id="output"></p>
         <p><em><small id="deviceName"></small></em></p>
         <script>
-        // handle past and future state updates
+
         var El = function (tag, text) {
             var el = document.createElement(tag);
             el.innerText = text || '';
             return el;
         };
 
+        // handle past and future state updates
         window.webxdc.setUpdateListener(function (update) {
             var output = document.getElementById('output');
+            // when appending content to an element with output.innerHTML +=
+            // that content is implicitly parsed, making it possible for messages
+            // to be interpreted as scripts. Creating elements directly,
+            // injecting content as plain text, and appending them to the DOM
+            // is a much safer practice.
             [
                 El('strong', update.payload.name + ':'),
                 El('span', update.payload.msg),
