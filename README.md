@@ -38,15 +38,7 @@ tsc --noEmit --allowJs --lib es2015,dom your_js_file.js
 ### Developing in Safari
 
 To use the devtool in safari you need to disable the local file restrictions
-under `Develop` -> `Disable Local File Restrictions`:
-
-<p>
-<img
-src="images/dev_tool_settings_safari.png"
-alt="'Disable Local File Restrictions' entry in the 'Develop' menu in safari"
-style="max-height:40vh"
-/>
-</p>
+under `Develop` -> `Disable Local File Restrictions`.
 
 After doing this you can use the dev tool simulator.
 
