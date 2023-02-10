@@ -21,6 +21,18 @@ and **send it to your friends** 🙂
 
 ## Further Hints and Troubleshooting
 
+
+### Limitations
+
+Due to the nature of most browsers and how they scope `localStorage`,
+each emulated peer will get the same `localStorage`.
+
+To really test the storage usage of your Webxdc,
+bundle the app and test it in Delta Chat directly
+where all peers get their own `localStorage`.
+Alternatively, use the more advanced [webxdc-dev](https://github.com/webxdc/webxdc-dev) tool.
+
+
 ### Type-checking and completion
 
 If you are using VSCode you can have autocompletion and type-checking even without using TypeScript by adding these two lines to your JavaScript source files:
@@ -58,14 +70,3 @@ Without this option `Add Peer` seems to work (it opens a new instance), but **th
 - when you are done, use `./create-xdc.sh` for bundling
 - copy the created `.xdc` file to a location from where you can access and send it via Delta Chat
 - pro tip: you can create symbolic link to a folder in the external storage
-
-
-### Limitations
-
-Due to the nature of most browsers and how they scope `localStorage`,
-each emulated peer will get the same `localStorage`.
-
-To really test the storage usage of your Webxdc,
-bundle the app and test it in Delta Chat directly
-where all peers get their own `localStorage`.
-Alternatively, use the more advanced [webxdc-dev](https://github.com/webxdc/webxdc-dev) tool.
