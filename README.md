@@ -18,6 +18,8 @@ to **develop and test your app in most browsers.**
 Bundle your app using `./create-xdc.sh your-app-name`
 and **send it to your friends** 🙂
 
+<img width="311" alt="Screenshot 2023-02-10 at 20 40 22" src="https://user-images.githubusercontent.com/9800740/218183018-59d0aa06-da92-445b-9cad-51e416594d31.png">
+
 
 ## Further Hints and Troubleshooting
 
