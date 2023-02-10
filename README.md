@@ -60,11 +60,11 @@ Without this option `Add Peer` seems to work (it opens a new instance), but **th
 - pro tip: you can create symbolic link to a folder in the external storage
 
 
-## limitations
+## Limitations
 
-due to the nature of most browsers and how they scope `localStorage`,
+Due to the nature of most browsers and how they scope `localStorage`,
 each emulated peer will get the same `localStorage`.
 
-to really test the storage usage of your Webxdc,
+To really test the storage usage of your Webxdc,
 bundle the app and test it in Delta Chat directly
 where all peers get their own `localStorage`.
