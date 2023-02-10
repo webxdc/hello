@@ -68,3 +68,4 @@ each emulated peer will get the same `localStorage`.
 To really test the storage usage of your Webxdc,
 bundle the app and test it in Delta Chat directly
 where all peers get their own `localStorage`.
+Alternatively, use the more advanced [webxdc-dev](https://github.com/webxdc/webxdc-dev) tool.
