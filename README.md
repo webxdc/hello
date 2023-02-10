@@ -60,7 +60,7 @@ Without this option `Add Peer` seems to work (it opens a new instance), but **th
 - pro tip: you can create symbolic link to a folder in the external storage
 
 
-## Limitations
+### Limitations
 
 Due to the nature of most browsers and how they scope `localStorage`,
 each emulated peer will get the same `localStorage`.
