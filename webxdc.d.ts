@@ -34,6 +34,34 @@ type ReceivedStatusUpdate<T> = {
   summary?: string;
 };
 
+type XDCFile = {
+  /** name of the file */
+  name: string;
+} & (
+  | {
+      /** blob, also accepts types that inherit Blob, like File */
+      blob: Blob;
+    }
+  | {
+      /** base64 encoded file data */
+      base64: string;
+    }
+  | {
+      /** text for textfile, will be encoded as utf8 */
+      plainText: string;
+    }
+);
+
+type sendOptions =
+  | {
+      file: XDCFile;
+      text?: string;
+    }
+  | {
+      file?: XDCFile;
+      text: string;
+    };
+
 interface Webxdc<T> {
   /** Returns the peer's own address.
    *  This is esp. useful if you want to differ between different peers - just send the address along with the payload,
@@ -47,9 +75,12 @@ interface Webxdc<T> {
    * Note that own status updates, that you send with {@link sendUpdate}, also trigger this method
    * @returns promise that resolves when the listener has processed all the update messages known at the time when `setUpdateListener` was called.
    * */
-  setUpdateListener(cb: (statusUpdate: ReceivedStatusUpdate<T>) => void, serial?: number): Promise<void>;
+  setUpdateListener(
+    cb: (statusUpdate: ReceivedStatusUpdate<T>) => void,
+    serial?: number
+  ): Promise<void>;
   /**
-   * WARNING! This function is deprecated, see setUpdateListener().
+   * @deprecated See {@link setUpdateListener|`setUpdateListener()`}.
    */
   getAllUpdates(): Promise<ReceivedStatusUpdate<T>[]>;
   /**
@@ -58,6 +89,14 @@ interface Webxdc<T> {
    * @param description short, human-readable description what this update is about. this is shown eg. as a fallback text in an email program.
    */
   sendUpdate(update: SendingStatusUpdate<T>, description: string): void;
+  /**
+   * Send a message with file, text or both to a chat.
+   * Asks user to what Chat to send the message to.
+   * Always exits the xdc, please save your app state before calling this function
+   * @param content
+   * @returns returns a promise that never resolves (because the xdc closes), but is rejected on error.
+   */
+  sendToChat(content: sendOptions): Promise<void>;
 }
 
 ////////// ANCHOR: global
@@ -68,13 +107,4 @@ declare global {
 }
 ////////// ANCHOR_END: global
 
-export { SendingStatusUpdate, ReceivedStatusUpdate, Webxdc };
-
-/* Types for the Simulator */
-declare global {
-  interface Window {
-    addXdcPeer: () => void;
-    clearXdcStorage: () => void;
-    alterXdcApp: () => void;
-  }
-}
+export { SendingStatusUpdate, ReceivedStatusUpdate, Webxdc, XDCFile };
