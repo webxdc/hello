@@ -112,25 +112,26 @@ window.webxdc = (() => {
                 );
               }
             }
-            const confirmed = confirm(
-              `The app would now close and the user would select a chat to send this message:\nText: ${
+            const msg = `The app would now close and the user would select a chat to send this message:\nText: ${
                 content.text ? `"${content.text}"` : "No Text"
               }\nFile: ${
-                content.file
-                  ? `${content.file.name} - ${base64Content.length} bytes`
-                  : "No File"
-              }`
-            );
-            if (confirmed && content.file) {
-              var element = document.createElement("a");
-              element.setAttribute(
-                "href",
-                "data:application/octet-stream;base64," + base64Content
-              );
-              element.setAttribute("download", content.file.name);
-              document.body.appendChild(element);
-              element.click();
-              document.body.removeChild(element);
+                content.file ? `${content.file.name} - ${base64Content.length} bytes` : "No File"
+              }`;
+            if (content.file) {
+              const confirmed = confirm(msg + '\n\nDownload the file in the browser instead?');
+              if (confirmed) {
+                var element = document.createElement("a");
+                element.setAttribute(
+                  "href",
+                  "data:application/octet-stream;base64," + base64Content
+                );
+                element.setAttribute("download", content.file.name);
+                document.body.appendChild(element);
+                element.click();
+                document.body.removeChild(element);
+              }
+            } else {
+              alert(msg);
             }
         }
     };
