@@ -51,6 +51,88 @@ window.webxdc = (() => {
             console.log('[Webxdc] description="' + description + '", ' + JSON.stringify(_update));
             updateListener(_update);
         },
+        sendToChat: async (content) => {
+            if (!content.file && !content.text) {
+              alert("🚨 Error: either file or text need to be set. (or both)");
+              return Promise.reject(
+                "Error from sendToChat: either file or text need to be set"
+              );
+            }
+
+            /** @type {(file: Blob) => Promise<string>} */
+            const blob_to_base64 = (file) => {
+              const data_start = ";base64,";
+              return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => {
+                  /** @type {string} */
+                  //@ts-ignore
+                  let data = reader.result;
+                  resolve(
+                    data.slice(data.indexOf(data_start) + data_start.length)
+                  );
+                };
+                reader.onerror = () => reject(reader.error);
+              });
+            };
+
+            let base64Content;
+            if (content.file) {
+              if (!content.file.name) {
+                return Promise.reject("file name is missing");
+              }
+              if (
+                Object.keys(content.file).filter((key) =>
+                  ["blob", "base64", "plainText"].includes(key)
+                ).length > 1
+              ) {
+                return Promise.reject(
+                  "you can only set one of `blob`, `base64` or `plainText`, not multiple ones"
+                );
+              }
+
+              // @ts-ignore - needed because typescript imagines that blob would not exist
+              if (content.file.blob instanceof Blob) {
+                // @ts-ignore - needed because typescript imagines that blob would not exist
+                base64Content = await blob_to_base64(content.file.blob);
+                // @ts-ignore - needed because typescript imagines that base64 would not exist
+              } else if (typeof content.file.base64 === "string") {
+                // @ts-ignore - needed because typescript imagines that base64 would not exist
+                base64Content = content.file.base64;
+                // @ts-ignore - needed because typescript imagines that plainText would not exist
+              } else if (typeof content.file.plainText === "string") {
+                base64Content = await blob_to_base64(
+                  // @ts-ignore - needed because typescript imagines that plainText would not exist
+                  new Blob([content.file.plainText])
+                );
+              } else {
+                return Promise.reject(
+                  "data is not set or wrong format, set one of `blob`, `base64` or `plainText`, see webxdc documentation for sendToChat"
+                );
+              }
+            }
+            const confirmed = confirm(
+              `The app would now close and the user would select a chat to send this message:\nText: ${
+                content.text ? `"${content.text}"` : "No Text"
+              }\nFile: ${
+                content.file
+                  ? `${content.file.name} - ${base64Content.length} bytes`
+                  : "No File"
+              }`
+            );
+            if (confirmed && content.file) {
+              var element = document.createElement("a");
+              element.setAttribute(
+                "href",
+                "data:application/octet-stream;base64," + base64Content
+              );
+              element.setAttribute("download", content.file.name);
+              document.body.appendChild(element);
+              element.click();
+              document.body.removeChild(element);
+            }
+        }
     };
 })();
 
