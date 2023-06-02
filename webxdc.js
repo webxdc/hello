@@ -119,7 +119,7 @@ window.webxdc = (() => {
                 content.file
                   ? `${content.file.name} - ${base64Content.length} bytes`
                   : "No File"
-              }`
+              }\n\nDownload the file in the browser instead?`
             );
             if (confirmed && content.file) {
               var element = document.createElement("a");
