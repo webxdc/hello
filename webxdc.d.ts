@@ -108,3 +108,12 @@ declare global {
 ////////// ANCHOR_END: global
 
 export { SendingStatusUpdate, ReceivedStatusUpdate, Webxdc, XDCFile };
+
+/* Types for the Simulator */
+declare global {
+  interface Window {
+    addXdcPeer: () => void;
+    clearXdcStorage: () => void;
+    alterXdcApp: () => void;
+  }
+}
