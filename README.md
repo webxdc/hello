@@ -48,8 +48,8 @@ Without VSCode you need to install TypeScript and then run the check manually.
 
 ```sh
 npm -g typescript
-tsc --noEmit --allowJs --lib es2015,dom webxdc.js # to check if types and simulator are in sync
-tsc --noEmit --allowJs --lib es2015,dom your_js_file.js
+tsc --noEmit --allowJs --lib es2016,dom webxdc.js # to check if types and simulator are in sync
+tsc --noEmit --allowJs --lib es2016,dom your_js_file.js
 ```
 
 ### Developing in Safari
