@@ -145,7 +145,7 @@ window.webxdc = (() => {
           const promise = new Promise((resolve, _reject) => {
             element.onchange = (_ev) => {
               console.log("element.files", element.files);
-              const files = [...element.files];
+              const files = Array.from(element.files || []);;
               document.body.removeChild(element);
               resolve(files);
             };
