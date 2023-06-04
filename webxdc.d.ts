@@ -97,6 +97,23 @@ interface Webxdc<T> {
    * @returns returns a promise that never resolves (because the xdc closes), but is rejected on error.
    */
   sendToChat(content: sendOptions): Promise<void>;
+  /**
+   * Asks the user to choose files.
+   * This either opens a normal file picker (like `<input type=file>`) or an integrated Filepicker if the ui has implemented it.
+   * This custom file picker should show files that were recently send or received in chats,
+   * but also show a button to open the normal file picker.
+   */
+  importFiles(filters: {
+    /**
+     * mimetypes as in https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/accept#unique_file_type_specifiers
+     */
+    mimeTypes?: string[];
+    /** only show files with these extensions.
+     * All extensions need to start with a dot and have the format `.ext`. */
+    extensions?: string[];
+    /** false by default, whether to allow multiple files to be selected */
+    multiple?: boolean;
+  }): Promise<File[]>;
 }
 
 ////////// ANCHOR: global
