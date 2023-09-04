@@ -1,3 +1,10 @@
+// This file originates from
+// https://github.com/webxdc/hello/blob/master/webxdc.js
+// It's a stub `webxdc.js` that adds a webxdc API stub for easier testing in
+// browsers. In an actual webxdc environment (e.g. Delta Chat messenger) this
+// file is not used and will automatically be replaced with a real one.
+// See https://docs.webxdc.org/spec.html#webxdc-api
+
 // debug friend: document.writeln(JSON.stringify(value));
 //@ts-check
 /** @type {import('./webxdc').Webxdc<any>} */
