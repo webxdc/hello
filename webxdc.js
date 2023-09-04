@@ -213,8 +213,8 @@ window.alterXdcApp = () => {
   title.innerText = window.webxdc.selfAddr;
 
   if (window.webxdc.selfName === "device0") {
-    var div = document.createElement("div");
-    div.innerHTML =
+    var root = document.createElement("div");
+    root.innerHTML =
       '<div id="webxdc-panel" style="' +
       styleControlPanel +
       '">' +
@@ -228,13 +228,14 @@ window.alterXdcApp = () => {
       styleMenuLink +
       '">Clear Storage</a>' +
       "<div>";
-    var controlPanel = div.firstChild;
+    var controlPanel = root.firstChild;
 
     function loadIcon(name) {
       var tester = new Image();
       tester.onload = () => {
-        div.innerHTML = '<img src="' + name + '" style="' + styleAppIcon + '">';
-        controlPanel.insertBefore(div.firstChild, controlPanel.firstChild);
+        root.innerHTML =
+          '<img src="' + name + '" style="' + styleAppIcon + '">';
+        controlPanel.insertBefore(root.firstChild, controlPanel.firstChild);
       };
       tester.src = name;
     }
