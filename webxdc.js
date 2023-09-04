@@ -213,11 +213,12 @@ window.alterXdcApp = () => {
   title.innerText = window.webxdc.selfAddr;
 
   if (window.webxdc.selfName === "device0") {
-    var root = document.createElement("div");
+    var root = document.createElement("section");
     root.innerHTML =
       '<div id="webxdc-panel" style="' +
       styleControlPanel +
       '">' +
+      '<header style="margin-bottom: 0.5em;">webxdc dev tools</header>' +
       '<a href="javascript:window.addXdcPeer();" style="' +
       styleMenuLink +
       '">Add Peer</a>' +
@@ -235,7 +236,7 @@ window.alterXdcApp = () => {
       tester.onload = () => {
         root.innerHTML =
           '<img src="' + name + '" style="' + styleAppIcon + '">';
-        controlPanel.insertBefore(root.firstChild, controlPanel.firstChild);
+        controlPanel.insertBefore(root.firstChild, controlPanel.childNodes[1]);
       };
       tester.src = name;
     }
