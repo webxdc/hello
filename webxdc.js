@@ -218,7 +218,7 @@ window.alterXdcApp = () => {
       '<div id="webxdc-panel" style="' +
       styleControlPanel +
       '">' +
-      '<header style="margin-bottom: 0.5em;">webxdc dev tools</header>' +
+      '<header style="margin-bottom: 0.5em; font-size:12px;">webxdc dev tools</header>' +
       '<a href="javascript:window.addXdcPeer();" style="' +
       styleMenuLink +
       '">Add Peer</a>' +
