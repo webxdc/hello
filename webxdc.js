@@ -234,7 +234,7 @@ window.alterXdcApp = () => {
       '"> | </span>' +
       '<a id="webxdc-panel-clear" href="javascript:window.clearXdcStorage();" style="' +
       styleMenuLink +
-      '">Clear Storage</a>' +
+      '">Reset</a>' +
       "<div>";
     var controlPanel = root.firstChild;
 
