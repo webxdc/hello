@@ -55,6 +55,7 @@ window.webxdc = (() => {
         payload: update.payload,
         summary: update.summary,
         info: update.info,
+        document: update.document,
         serial: serial,
       };
       updates.push(_update);
