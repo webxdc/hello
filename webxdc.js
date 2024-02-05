@@ -245,6 +245,11 @@ window.alterXdcApp = () => {
         root.innerHTML =
           '<img src="' + name + '" style="' + styleAppIcon + '">';
         controlPanel.insertBefore(root.firstChild, controlPanel.childNodes[1]);
+        
+        var pageIcon = document.createElement('link');
+        pageIcon.rel = "icon";
+        pageIcon.href = name;
+        document.head.append(pageIcon);
       };
       tester.src = name;
     }
