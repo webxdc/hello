@@ -25,7 +25,6 @@ window.webxdc = (() => {
     } else if (event.key === ephemeralUpdateKey) {
       var updates = JSON.parse(event.newValue);
       var update = updates[updates.length - 1];
-      console.log("[Webxdc] " + JSON.stringify(update));
       ephemeralUpdatListener(update);
     }
   });
