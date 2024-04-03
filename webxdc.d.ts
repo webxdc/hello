@@ -82,6 +82,13 @@ interface Webxdc<T> {
     cb: (statusUpdate: ReceivedStatusUpdate<T>) => void,
     serial?: number
   ): Promise<void>;
+
+  /**
+   * Set a listener for _ephemeral_ status updates.
+   * Own status updates are not received.
+   */
+  setEphemeralUpdateListener(cb: (payload: T) => void): void;
+
   /**
    * @deprecated See {@link setUpdateListener|`setUpdateListener()`}.
    */
@@ -92,6 +99,13 @@ interface Webxdc<T> {
    * @param description short, human-readable description what this update is about. this is shown eg. as a fallback text in an email program.
    */
   sendUpdate(update: SendingStatusUpdate<T>, description: string): void;
+
+  /**
+   * Send an ephemeral update to another peer.
+   * @param payload Data that can be serialized with `JSON.stringify`.
+   */
+  sendEphemeralUpdate(payload: T): void;
+
   /**
    * Send a message with file, text or both to a chat.
    * Asks user to what Chat to send the message to.

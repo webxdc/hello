@@ -10,7 +10,9 @@
 /** @type {import('./webxdc').Webxdc<any>} */
 window.webxdc = (() => {
   var updateListener = (_) => {};
+  var ephemeralUpdatListener = (_) => {};
   var updatesKey = "__xdcUpdatesKey__";
+  let ephemeralUpdateKey = "__xdcEphemeralUpdateKey__";
   window.addEventListener("storage", (event) => {
     if (event.key == null) {
       window.location.reload();
@@ -20,12 +22,22 @@ window.webxdc = (() => {
       update.max_serial = updates.length;
       console.log("[Webxdc] " + JSON.stringify(update));
       updateListener(update);
+    } else if (event.key === ephemeralUpdateKey) {
+      var updates = JSON.parse(event.newValue);
+      var update = updates[updates.length - 1];
+      console.log("[Webxdc] " + JSON.stringify(update));
+      ephemeralUpdatListener(update);
     }
   });
 
   function getUpdates() {
     var updatesJSON = window.localStorage.getItem(updatesKey);
     return updatesJSON ? JSON.parse(updatesJSON) : [];
+  }
+
+  function getEphemeralUpdate() {
+    var ephemeralUpdateJSON = window.localStorage.getItem(ephemeralUpdateKey);
+    return ephemeralUpdateJSON ? JSON.parse(ephemeralUpdateJSON) : [];
   }
 
   var params = new URLSearchParams(window.location.hash.substr(1));
@@ -43,6 +55,10 @@ window.webxdc = (() => {
       });
       updateListener = cb;
       return Promise.resolve();
+    },
+    setEphemeralUpdateListener: (cb) => {
+      localStorage.setItem(ephemeralUpdateKey, JSON.stringify([]));
+      ephemeralUpdatListener = cb;
     },
     getAllUpdates: () => {
       console.log("[Webxdc] WARNING: getAllUpdates() is deprecated.");
@@ -65,6 +81,11 @@ window.webxdc = (() => {
         '[Webxdc] description="' + description + '", ' + JSON.stringify(_update)
       );
       updateListener(_update);
+    },
+    sendEphemeralUpdate: (payload) => {
+      let updates = getEphemeralUpdate();
+      updates.push(payload);
+      window.localStorage.setItem(ephemeralUpdateKey, JSON.stringify(updates));
     },
     sendToChat: async (content) => {
       if (!content.file && !content.text) {
@@ -245,8 +266,8 @@ window.alterXdcApp = () => {
         root.innerHTML =
           '<img src="' + name + '" style="' + styleAppIcon + '">';
         controlPanel.insertBefore(root.firstChild, controlPanel.childNodes[1]);
-        
-        var pageIcon = document.createElement('link');
+
+        var pageIcon = document.createElement("link");
         pageIcon.rel = "icon";
         pageIcon.href = name;
         document.head.append(pageIcon);
