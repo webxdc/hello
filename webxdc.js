@@ -22,10 +22,14 @@ window.webxdc = (() => {
       update.max_serial = updates.length;
       console.log("[Webxdc] " + JSON.stringify(update));
       updateListener(update);
-    } else if (event.key === ephemeralUpdateKey) {
-      var updates = JSON.parse(event.newValue);
-      var update = updates[updates.length - 1];
-      ephemeralUpdatListener(update);
+    }
+    // Tab-communication could also use https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage
+    // The local storage approach should be supported on more older browsers.
+    else if (event.key === ephemeralUpdateKey) {
+      var [sender, update] = JSON.parse(event.newValue);
+      if (window.webxdc.selfAddr !== sender) {
+        ephemeralUpdatListener(update);
+      }
     }
   });
 
@@ -56,7 +60,6 @@ window.webxdc = (() => {
       return Promise.resolve();
     },
     setEphemeralUpdateListener: (cb) => {
-      localStorage.setItem(ephemeralUpdateKey, JSON.stringify([]));
       ephemeralUpdatListener = cb;
     },
     getAllUpdates: () => {
@@ -83,8 +86,10 @@ window.webxdc = (() => {
     },
     sendEphemeralUpdate: (payload) => {
       let updates = getEphemeralUpdate();
-      updates.push(payload);
-      window.localStorage.setItem(ephemeralUpdateKey, JSON.stringify(updates));
+      window.localStorage.setItem(
+        ephemeralUpdateKey,
+        JSON.stringify([window.webxdc.selfAddr, payload])
+      );
     },
     sendToChat: async (content) => {
       if (!content.file && !content.text) {
