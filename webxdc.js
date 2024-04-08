@@ -61,6 +61,7 @@ window.webxdc = (() => {
     },
     setEphemeralUpdateListener: (cb) => {
       ephemeralUpdatListener = cb;
+      return Promise.resolve();
     },
     getAllUpdates: () => {
       console.log("[Webxdc] WARNING: getAllUpdates() is deprecated.");

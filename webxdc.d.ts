@@ -87,7 +87,7 @@ interface Webxdc<T> {
    * Set a listener for _ephemeral_ status updates.
    * Own status updates are not received.
    */
-  setEphemeralUpdateListener(cb: (payload: T) => void): void;
+  setEphemeralUpdateListener(cb: (payload: T) => void): Promise<void>;
 
   /**
    * @deprecated See {@link setUpdateListener|`setUpdateListener()`}.
