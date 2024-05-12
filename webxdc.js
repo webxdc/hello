@@ -4,15 +4,60 @@
 // browsers. In an actual webxdc environment (e.g. Delta Chat messenger) this
 // file is not used and will automatically be replaced with a real one.
 // See https://docs.webxdc.org/spec.html#webxdc-api
+let ephemeralUpdateKey = "__xdcEphemeralUpdateKey__";
+
+/**
+ * @typedef {import('./webxdc.d.ts').RealtimeListener} RT
+ * @type {RT}
+ */
+class RealtimeListener {
+  constructor() {
+    this.listener = null;
+    this.trashed = false;
+  }
+
+  is_trashed() {
+    return this.trashed;
+  }
+
+  receive(data) {
+    if (this.trashed) {
+      throw new Error("realtime listener is trashed and can no longer be used");
+    }
+    if (this.listener) {
+      this.listener(data);
+    }
+  }
+
+  setListener(listener) {
+    this.listener = listener;
+  }
+
+  send(data) {
+    if (!data instanceof Uint8Array) {
+      throw new Error("realtime listener data must be a Uint8Array");
+    }
+    window.localStorage.setItem(
+      ephemeralUpdateKey,
+      JSON.stringify([window.webxdc.selfAddr, Array.from(data), Date.now()]) // Date.now() is needed to trigger the event
+    );
+  }
+
+  leave() {
+    this.trashed = true;
+  }
+}
 
 // debug friend: document.writeln(JSON.stringify(value));
 //@ts-check
 /** @type {import('./webxdc').Webxdc<any>} */
 window.webxdc = (() => {
   var updateListener = (_) => {};
-  var ephemeralUpdatListener = (_) => {};
+  /**
+   * @type {RT | null}
+   */
+  var realtimeListener = null;
   var updatesKey = "__xdcUpdatesKey__";
-  let ephemeralUpdateKey = "__xdcEphemeralUpdateKey__";
   window.addEventListener("storage", (event) => {
     if (event.key == null) {
       window.location.reload();
@@ -22,13 +67,10 @@ window.webxdc = (() => {
       update.max_serial = updates.length;
       console.log("[Webxdc] " + JSON.stringify(update));
       updateListener(update);
-    }
-    // Tab-communication could also use https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage
-    // The local storage approach should be supported on more older browsers.
-    else if (event.key === ephemeralUpdateKey) {
+    } else if (event.key === ephemeralUpdateKey) {
       var [sender, update] = JSON.parse(event.newValue);
-      if (window.webxdc.selfAddr !== sender) {
-        ephemeralUpdatListener(update);
+      if (window.webxdc.selfAddr !== sender && realtimeListener && !realtimeListener.is_trashed()) {
+        realtimeListener.receive( Uint8Array.from(update));
       }
     }
   });
@@ -36,11 +78,6 @@ window.webxdc = (() => {
   function getUpdates() {
     var updatesJSON = window.localStorage.getItem(updatesKey);
     return updatesJSON ? JSON.parse(updatesJSON) : [];
-  }
-
-  function getEphemeralUpdate() {
-    var ephemeralUpdateJSON = window.localStorage.getItem(ephemeralUpdateKey);
-    return ephemeralUpdateJSON ? JSON.parse(ephemeralUpdateJSON) : [];
   }
 
   var params = new URLSearchParams(window.location.hash.substr(1));
@@ -59,9 +96,14 @@ window.webxdc = (() => {
       updateListener = cb;
       return Promise.resolve();
     },
-    setEphemeralUpdateListener: (cb) => {
-      ephemeralUpdatListener = cb;
-      return Promise.resolve();
+    joinRealtimeChannel: (cb) => {
+      if (realtimeListener && realtimeListener.is_trashed()) {
+        return;
+      }
+      rt = new RealtimeListener();
+      // mimic connection establishment time
+      setTimeout(() => realtimeListener = rt, 500);
+      return rt;
     },
     getAllUpdates: () => {
       console.log("[Webxdc] WARNING: getAllUpdates() is deprecated.");
@@ -84,13 +126,6 @@ window.webxdc = (() => {
         '[Webxdc] description="' + description + '", ' + JSON.stringify(_update)
       );
       updateListener(_update);
-    },
-    sendEphemeralUpdate: (payload) => {
-      let updates = getEphemeralUpdate();
-      window.localStorage.setItem(
-        ephemeralUpdateKey,
-        JSON.stringify([window.webxdc.selfAddr, payload])
-      );
     },
     sendToChat: async (content) => {
       if (!content.file && !content.text) {
