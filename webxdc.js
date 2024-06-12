@@ -1,4 +1,4 @@
-// This file originates from
+// This file is copy-pasted from
 // https://github.com/webxdc/hello/blob/master/webxdc.js
 // It's a stub `webxdc.js` that adds a webxdc API stub for easy testing in
 // browsers. In an actual webxdc environment (e.g. Delta Chat messenger) this
