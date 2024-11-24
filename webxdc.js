@@ -109,7 +109,7 @@ window.webxdc = (() => {
       console.log("[Webxdc] WARNING: getAllUpdates() is deprecated.");
       return Promise.resolve([]);
     },
-    sendUpdate: (update, description) => {
+    sendUpdate: (update) => {
       var updates = getUpdates();
       var serial = updates.length + 1;
       var _update = {
@@ -123,7 +123,7 @@ window.webxdc = (() => {
       window.localStorage.setItem(updatesKey, JSON.stringify(updates));
       _update.max_serial = serial;
       console.log(
-        '[Webxdc] description="' + description + '", ' + JSON.stringify(_update)
+        '[Webxdc] ' + JSON.stringify(_update)
       );
       updateListener(_update);
     },
