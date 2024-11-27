@@ -12,8 +12,12 @@ Sample project with a simple implementation of the webxdc read and write APIs.
 
 ## Developing webxdc apps
 
-Simply copy `webxdc.js` from this repo beside your `index.html` and you are ready to go
-to **develop and test your app in most browsers.**
+Include:
+```html
+<script src="https://cdn.jsdelivr.net/gh/webxdc/vite-plugins@latest/src/webxdc.js"></script>
+```
+in your `index.html` to use a webxdc emulator and you are ready to
+**develop and test your app in most browsers.**
 
 Bundle your app using `./create-xdc.sh your-app-name`
 and **send it to your friends** 🙂
@@ -23,6 +27,11 @@ and **send it to your friends** 🙂
 
 ## Further Hints and Troubleshooting
 
+### Type-checking
+
+If you want to have type-checking you can use [@webxdc/types](https://github.com/webxdc/webxdc-types/) package, check:
+
+https://github.com/webxdc/webxdc-types/
 
 ### Limitations
 
@@ -33,24 +42,6 @@ To really test the storage usage of your Webxdc,
 bundle the app and test it in Delta Chat directly
 where all peers get their own `localStorage`.
 Alternatively, use the more advanced [webxdc-dev](https://github.com/webxdc/webxdc-dev) tool.
-
-
-### Type-checking and completion
-
-If you are using VSCode you can have autocompletion and type-checking even without using TypeScript by adding these two lines to your JavaScript source files:
-
-```js
-//@ts-check
-/** @typedef {import('./webxdc').Webxdc} Webxdc */
-```
-
-Without VSCode you need to install TypeScript and then run the check manually.
-
-```sh
-npm -g typescript
-tsc --noEmit --allowJs --lib es2016,dom webxdc.js # to check if types and simulator are in sync
-tsc --noEmit --allowJs --lib es2016,dom your_js_file.js
-```
 
 ### Developing in Safari
 
