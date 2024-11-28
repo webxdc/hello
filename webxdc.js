@@ -1,92 +1,243 @@
 // This file originates from
-// https://github.com/webxdc/hello/blob/master/webxdc.js
+// https://github.com/webxdc/vite-plugins/blob/main/src/webxdc.js
 // It's a stub `webxdc.js` that adds a webxdc API stub for easy testing in
 // browsers. In an actual webxdc environment (e.g. Delta Chat messenger) this
 // file is not used and will automatically be replaced with a real one.
 // See https://docs.webxdc.org/spec.html#webxdc-api
-let ephemeralUpdateKey = "__xdcEphemeralUpdateKey__";
 
-/**
- * @typedef {import('./webxdc.d.ts').RealtimeListener} RT
- * @type {RT}
- */
-class RealtimeListener {
-  constructor() {
-    this.listener = null;
-    this.trashed = false;
-  }
+// @ts-check
+/** @typedef {import('@webxdc/types/global')} */
 
-  is_trashed() {
-    return this.trashed;
-  }
-
-  receive(data) {
-    if (this.trashed) {
-      throw new Error("realtime listener is trashed and can no longer be used");
-    }
-    if (this.listener) {
-      this.listener(data);
-    }
-  }
-
-  setListener(listener) {
-    this.listener = listener;
-  }
-
-  send(data) {
-    if (!data instanceof Uint8Array) {
-      throw new Error("realtime listener data must be a Uint8Array");
-    }
-    window.localStorage.setItem(
-      ephemeralUpdateKey,
-      JSON.stringify([window.webxdc.selfAddr, Array.from(data), Date.now()]) // Date.now() is needed to trigger the event
-    );
-  }
-
-  leave() {
-    this.trashed = true;
-  }
-}
-
-// debug friend: document.writeln(JSON.stringify(value));
-//@ts-check
-/** @type {import('./webxdc').Webxdc<any>} */
+/** @type {import('@webxdc/types').Webxdc<any>} */
 window.webxdc = (() => {
-  var updateListener = (_) => {};
+  function h(tag, attributes, ...children) {
+    const element = document.createElement(tag);
+    if (attributes) {
+      Object.entries(attributes).forEach((entry) => {
+        element.setAttribute(entry[0], entry[1]);
+      });
+    }
+    element.append(...children);
+    return element;
+  }
+
+  let appIcon = undefined;
+  async function getIcon() {
+    if (appIcon) {
+      return appIcon;
+    }
+    const img = new Image();
+    try {
+      img.src = "icon.png";
+      await img.decode();
+      appIcon = "icon.png";
+    } catch (e) {
+      img.src = "icon.jpg";
+      try {
+        await img.decode();
+        appIcon = "icon.jpg";
+      } catch (e) {}
+    }
+    return appIcon;
+  }
+  getIcon();
+
+  let ephemeralUpdateKey = "__xdcEphemeralUpdateKey__";
+
+  /**
+   * @typedef {import('@webxdc/types').RealtimeListener} RT
+   * @type {RT}
+   */
+  class RealtimeListener {
+    constructor() {
+      /** @private */
+      this.listener = null;
+      /** @private */
+      this.trashed = false;
+    }
+
+    is_trashed() {
+      return this.trashed;
+    }
+
+    receive(data) {
+      if (this.trashed) {
+        throw new Error(
+          "realtime listener is trashed and can no longer be used",
+        );
+      }
+      if (this.listener) {
+        this.listener(data);
+      }
+    }
+
+    setListener(listener) {
+      this.listener = listener;
+    }
+
+    send(data) {
+      if (!(data instanceof Uint8Array)) {
+        throw new Error("realtime listener data must be a Uint8Array");
+      }
+      window.localStorage.setItem(
+        ephemeralUpdateKey,
+        JSON.stringify([window.webxdc.selfAddr, Array.from(data), Date.now()]), // Date.now() is needed to trigger the event
+      );
+    }
+
+    leave() {
+      this.trashed = true;
+    }
+  }
+
+  let updateListener = (_) => {};
   /**
    * @type {RT | null}
    */
-  var realtimeListener = null;
-  var updatesKey = "__xdcUpdatesKey__";
+  let realtimeListener = null;
+  const updatesKey = "__xdcUpdatesKey__";
   window.addEventListener("storage", (event) => {
     if (event.key == null) {
       window.location.reload();
     } else if (event.key === updatesKey) {
-      var updates = JSON.parse(event.newValue);
-      var update = updates[updates.length - 1];
+      const updates = JSON.parse(event.newValue);
+      const update = updates[updates.length - 1];
       update.max_serial = updates.length;
       console.log("[Webxdc] " + JSON.stringify(update));
+      if (update.notify && update._sender !== window.webxdc.selfAddr) {
+        if (update.notify[window.webxdc.selfAddr]) {
+          sendNotification(update.notify[window.webxdc.selfAddr]);
+        } else if (update.notify["*"]) {
+          sendNotification(update.notify["*"]);
+        }
+      }
       updateListener(update);
     } else if (event.key === ephemeralUpdateKey) {
-      var [sender, update] = JSON.parse(event.newValue);
-      if (window.webxdc.selfAddr !== sender && realtimeListener && !realtimeListener.is_trashed()) {
-        realtimeListener.receive( Uint8Array.from(update));
+      const [sender, update] = JSON.parse(event.newValue);
+      // @ts-ignore: is_trashed() is private
+      if (
+        window.webxdc.selfAddr !== sender &&
+        realtimeListener &&
+        // @ts-ignore: is_trashed() is private
+        !realtimeListener.is_trashed()
+      ) {
+        // @ts-ignore: receive() is private
+        realtimeListener.receive(Uint8Array.from(update));
       }
     }
   });
 
   function getUpdates() {
-    var updatesJSON = window.localStorage.getItem(updatesKey);
+    const updatesJSON = window.localStorage.getItem(updatesKey);
     return updatesJSON ? JSON.parse(updatesJSON) : [];
   }
 
-  var params = new URLSearchParams(window.location.hash.substr(1));
+  async function sendNotification(text) {
+    console.log("[NOTIFICATION] " + text);
+
+    const opts = { body: text, icon: await getIcon() };
+    const title = "To: " + window.webxdc.selfName;
+    if (Notification.permission === "granted") {
+      new Notification(title, opts);
+    } else {
+      Notification.requestPermission((permission) => {
+        if (Notification.permission === "granted") {
+          new Notification(title, opts);
+        }
+      });
+    }
+  }
+
+  function addXdcPeer() {
+    const loc = window.location;
+    // get next peer ID
+    const params = new URLSearchParams(loc.hash.substr(1));
+    const peerId = Number(params.get("next_peer")) || 1;
+
+    // open a new window
+    const peerName = "device" + peerId;
+    const url =
+      loc.protocol +
+      "//" +
+      loc.host +
+      loc.pathname +
+      "#name=" +
+      peerName +
+      "&addr=" +
+      peerName +
+      "@local.host";
+    window.open(url);
+
+    // update next peer ID
+    params.set("next_peer", String(peerId + 1));
+    window.location.hash = "#" + params.toString();
+  }
+
+  window.addEventListener("load", async () => {
+    const styleControlPanel =
+      "position: fixed; bottom:1em; left:1em; background-color: #000; opacity:0.8; padding:.5em; font-size:16px; font-family: sans-serif; color:#fff; z-index: 9999";
+    const styleMenuLink =
+      "color:#fff; text-decoration: none; vertical-align: middle";
+    const styleAppIcon =
+      "height: 1.5em; width: 1.5em; margin-right: 0.5em; border-radius:10%; vertical-align: middle";
+    let title = document.getElementsByTagName("title")[0];
+    if (typeof title == "undefined") {
+      title = h("title");
+      document.getElementsByTagName("head")[0].append(title);
+    }
+    title.innerText = window.webxdc.selfAddr;
+
+    if (window.webxdc.selfName === "device0") {
+      const addPeerBtn = h(
+        "a",
+        { href: "javascript:void(0);", style: styleMenuLink },
+        "Add Peer",
+      );
+      addPeerBtn.onclick = () => addXdcPeer();
+      const resetBtn = h(
+        "a",
+        { href: "javascript:void(0);", style: styleMenuLink },
+        "Reset",
+      );
+      resetBtn.onclick = () => {
+        window.localStorage.clear();
+        window.location.reload();
+      };
+      const controlPanel = h(
+        "div",
+        { style: styleControlPanel },
+        h(
+          "header",
+          { style: "margin-bottom: 0.5em; font-size:12px;" },
+          "webxdc dev tools",
+        ),
+        addPeerBtn,
+        h("span", { style: styleMenuLink }, " | "),
+        resetBtn,
+      );
+
+      const icon = await getIcon();
+      if (icon) {
+        controlPanel.insertBefore(
+          h("img", { src: icon, style: styleAppIcon }),
+          controlPanel.childNodes[1],
+        );
+        document.head.append(h("link", { rel: "icon", href: icon }));
+      }
+
+      document.getElementsByTagName("body")[0].append(controlPanel);
+    }
+  });
+
+  const params = new URLSearchParams(window.location.hash.substr(1));
   return {
+    sendUpdateInterval: 1000,
+    sendUpdateMaxSize: 999999,
     selfAddr: params.get("addr") || "device0@local.host",
     selfName: params.get("name") || "device0",
     setUpdateListener: (cb, serial = 0) => {
-      var updates = getUpdates();
-      var maxSerial = updates.length;
+      const updates = getUpdates();
+      const maxSerial = updates.length;
       updates.forEach((update) => {
         if (update.serial > serial) {
           update.max_serial = maxSerial;
@@ -97,12 +248,13 @@ window.webxdc = (() => {
       return Promise.resolve();
     },
     joinRealtimeChannel: (cb) => {
+      // @ts-ignore: is_trashed() is private
       if (realtimeListener && realtimeListener.is_trashed()) {
         return;
       }
-      rt = new RealtimeListener();
+      const rt = new RealtimeListener();
       // mimic connection establishment time
-      setTimeout(() => realtimeListener = rt, 500);
+      setTimeout(() => (realtimeListener = rt), 500);
       return rt;
     },
     getAllUpdates: () => {
@@ -110,28 +262,29 @@ window.webxdc = (() => {
       return Promise.resolve([]);
     },
     sendUpdate: (update) => {
-      var updates = getUpdates();
-      var serial = updates.length + 1;
-      var _update = {
+      const updates = getUpdates();
+      const serial = updates.length + 1;
+      const _update = {
         payload: update.payload,
         summary: update.summary,
         info: update.info,
+        notify: update.notify,
+        href: update.href,
         document: update.document,
         serial: serial,
       };
+      console.log(`[Webxdc] ${JSON.stringify(_update)}`);
+      _update._sender = window.webxdc.selfAddr;
       updates.push(_update);
       window.localStorage.setItem(updatesKey, JSON.stringify(updates));
       _update.max_serial = serial;
-      console.log(
-        '[Webxdc] ' + JSON.stringify(_update)
-      );
       updateListener(_update);
     },
     sendToChat: async (content) => {
       if (!content.file && !content.text) {
         alert("🚨 Error: either file or text need to be set. (or both)");
         return Promise.reject(
-          "Error from sendToChat: either file or text need to be set"
+          "Error from sendToChat: either file or text need to be set",
         );
       }
 
@@ -158,11 +311,11 @@ window.webxdc = (() => {
         }
         if (
           Object.keys(content.file).filter((key) =>
-            ["blob", "base64", "plainText"].includes(key)
+            ["blob", "base64", "plainText"].includes(key),
           ).length > 1
         ) {
           return Promise.reject(
-            "you can only set one of `blob`, `base64` or `plainText`, not multiple ones"
+            "you can only set one of `blob`, `base64` or `plainText`, not multiple ones",
           );
         }
 
@@ -178,11 +331,11 @@ window.webxdc = (() => {
         } else if (typeof content.file.plainText === "string") {
           base64Content = await blob_to_base64(
             // @ts-ignore - needed because typescript imagines that plainText would not exist
-            new Blob([content.file.plainText])
+            new Blob([content.file.plainText]),
           );
         } else {
           return Promise.reject(
-            "data is not set or wrong format, set one of `blob`, `base64` or `plainText`, see webxdc documentation for sendToChat"
+            "data is not set or wrong format, set one of `blob`, `base64` or `plainText`, see webxdc documentation for sendToChat",
           );
         }
       }
@@ -195,15 +348,15 @@ window.webxdc = (() => {
       }`;
       if (content.file) {
         const confirmed = confirm(
-          msg + "\n\nDownload the file in the browser instead?"
+          msg + "\n\nDownload the file in the browser instead?",
         );
         if (confirmed) {
-          var element = document.createElement("a");
-          element.setAttribute(
-            "href",
-            "data:application/octet-stream;base64," + base64Content
-          );
-          element.setAttribute("download", content.file.name);
+          const dataURL =
+            "data:application/octet-stream;base64," + base64Content;
+          const element = h("a", {
+            href: dataURL,
+            download: content.file.name,
+          });
           document.body.appendChild(element);
           element.click();
           document.body.removeChild(element);
@@ -213,13 +366,15 @@ window.webxdc = (() => {
       }
     },
     importFiles: (filters) => {
-      var element = document.createElement("input");
-      element.type = "file";
-      element.accept = [
+      const accept = [
         ...(filters.extensions || []),
         ...(filters.mimeTypes || []),
       ].join(",");
-      element.multiple = filters.multiple || false;
+      const element = h("input", {
+        type: "file",
+        accept,
+        multiple: filters.multiple || false,
+      });
       const promise = new Promise((resolve, _reject) => {
         element.onchange = (_ev) => {
           console.log("element.files", element.files);
@@ -236,89 +391,3 @@ window.webxdc = (() => {
     },
   };
 })();
-
-window.addXdcPeer = () => {
-  var loc = window.location;
-  // get next peer ID
-  var params = new URLSearchParams(loc.hash.substr(1));
-  var peerId = Number(params.get("next_peer")) || 1;
-
-  // open a new window
-  var peerName = "device" + peerId;
-  var url =
-    loc.protocol +
-    "//" +
-    loc.host +
-    loc.pathname +
-    "#name=" +
-    peerName +
-    "&addr=" +
-    peerName +
-    "@local.host";
-  window.open(url);
-
-  // update next peer ID
-  params.set("next_peer", String(peerId + 1));
-  window.location.hash = "#" + params.toString();
-};
-
-window.clearXdcStorage = () => {
-  window.localStorage.clear();
-  window.location.reload();
-};
-
-window.alterXdcApp = () => {
-  var styleControlPanel =
-    "position: fixed; bottom:1em; left:1em; background-color: #000; opacity:0.8; padding:.5em; font-size:16px; font-family: sans-serif; color:#fff; z-index: 9999";
-  var styleMenuLink =
-    "color:#fff; text-decoration: none; vertical-align: middle";
-  var styleAppIcon =
-    "height: 1.5em; width: 1.5em; margin-right: 0.5em; border-radius:10%; vertical-align: middle";
-  var title = document.getElementsByTagName("title")[0];
-  if (typeof title == "undefined") {
-    title = document.createElement("title");
-    document.getElementsByTagName("head")[0].append(title);
-  }
-  title.innerText = window.webxdc.selfAddr;
-
-  if (window.webxdc.selfName === "device0") {
-    var root = document.createElement("section");
-    root.innerHTML =
-      '<div id="webxdc-panel" style="' +
-      styleControlPanel +
-      '">' +
-      '<header style="margin-bottom: 0.5em; font-size:12px;">webxdc dev tools</header>' +
-      '<a href="javascript:window.addXdcPeer();" style="' +
-      styleMenuLink +
-      '">Add Peer</a>' +
-      '<span style="' +
-      styleMenuLink +
-      '"> | </span>' +
-      '<a id="webxdc-panel-clear" href="javascript:window.clearXdcStorage();" style="' +
-      styleMenuLink +
-      '">Reset</a>' +
-      "<div>";
-    var controlPanel = root.firstChild;
-
-    function loadIcon(name) {
-      var tester = new Image();
-      tester.onload = () => {
-        root.innerHTML =
-          '<img src="' + name + '" style="' + styleAppIcon + '">';
-        controlPanel.insertBefore(root.firstChild, controlPanel.childNodes[1]);
-
-        var pageIcon = document.createElement("link");
-        pageIcon.rel = "icon";
-        pageIcon.href = name;
-        document.head.append(pageIcon);
-      };
-      tester.src = name;
-    }
-    loadIcon("icon.png");
-    loadIcon("icon.jpg");
-
-    document.getElementsByTagName("body")[0].append(controlPanel);
-  }
-};
-
-window.addEventListener("load", window.alterXdcApp);
