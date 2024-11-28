@@ -37,20 +37,9 @@ Alternatively, use the more advanced [webxdc-dev](https://github.com/webxdc/webx
 
 ### Type-checking and completion
 
-If you are using VSCode you can have autocompletion and type-checking even without using TypeScript by adding these two lines to your JavaScript source files:
+If you want to have type-checking and autocompletion you can use [@webxdc/types](https://github.com/webxdc/webxdc-types/) package.
+Refer to https://webxdc.org/docs/faq/typing.html and https://github.com/webxdc/webxdc-types/ README for the documentation on setting it up.
 
-```js
-//@ts-check
-/** @typedef {import('./webxdc').Webxdc} Webxdc */
-```
-
-Without VSCode you need to install TypeScript and then run the check manually.
-
-```sh
-npm -g typescript
-tsc --noEmit --allowJs --lib es2016,dom webxdc.js # to check if types and simulator are in sync
-tsc --noEmit --allowJs --lib es2016,dom your_js_file.js
-```
 
 ### Developing in Safari
 
