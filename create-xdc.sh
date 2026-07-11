@@ -1,4 +1,5 @@
 #!/bin/sh
+set -e
 
 case "$1" in
     "-h" | "--help")
@@ -13,7 +14,7 @@ case "$1" in
         ;;
 esac
 
-rm "$PACKAGE_NAME.xdc" 2> /dev/null
+rm -f "$PACKAGE_NAME.xdc"
 zip -9 --recurse-paths "$PACKAGE_NAME.xdc" --exclude LICENSE README.md webxdc.js webxdc.d.ts "./*.sh" "./*.xdc" -- *
 
 echo "success, archive contents:"
